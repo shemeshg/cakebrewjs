@@ -1,23 +1,31 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p> {{result}}</p>
+    <p>
+      <button v-on:click="getInfo">getInfo</button>
+      <br />
+      {{ status }}
+    </p>
   </div>
 </template>
 
 <script lang="ts">
-// use the APIs
 import { ref } from '@vue/composition-api'
+import { BrewInfo } from "../src/BrewInfo";
 
 export default {
   setup() {
-    const result = ref("shalom")
+    const brewInfo = new BrewInfo()
+    const status = ref("")
+    
 
+    function getInfo(){
+      
+      return brewInfo.getInfo(status);
 
-    return {
-      result,
     }
-  }
+
+    return {  getInfo, status }; // anything returned here will be available for the rest of the component
+  },
 }
 </script>
 
