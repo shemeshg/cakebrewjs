@@ -124,17 +124,17 @@ export default {
   setup() {
     // eslint-disable-next-line
     const store: any = inject("vuex-store");
-
+    // eslint-disable-next-line
+    const brewCasksInfo = computed(() => store.state.brewCasksInfo);
+    // eslint-disable-next-line
+    const brewLsFormulas = computed(() => store.state.brewLsFormulas);
     
     const status = ref("");
 
     
     const filterCask = ref("");
     const filterFormula = ref("");
-    // eslint-disable-next-line
-    const brewCasksInfo = computed(() => store.state.brewCasksInfo);
-    // eslint-disable-next-line
-    const brewLsFormulas = computed(() => store.state.brewLsFormulas);
+
 
     const brewCasksFields = [
       { key: "token", sortable: true },

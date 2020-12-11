@@ -26,6 +26,7 @@ export class PackageInfo {
         packageName,
         status
       );
+      debugger;
       if (packageType === PackageType.formula){
         this.localSearchItem = this.brewLsFormulas.filter( (row)=>{ return row.name === packageName})
       } else {
@@ -34,5 +35,9 @@ export class PackageInfo {
       
       return;
 
+    }
+
+    get isInstalled(){
+      return this.localSearchItem.length > 0
     }
 }

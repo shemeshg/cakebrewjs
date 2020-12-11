@@ -20,22 +20,31 @@
     </p>
     <pre
       >{{ packageInfo }}    
-  </pre
-    >
+  </pre>
+  <p> is installed: {{isInstalled}} </p>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from "@vue/composition-api";
-import { BrewInfo, PackageType } from "../src/BrewInfo";
+import { ref, computed, inject } from "@vue/composition-api";
+import { PackageType } from "../src/BrewInfo";
+import { PackageInfo } from "../src/PackageInfo";
 
 export default {
   setup() {
+    // eslint-disable-next-line
+    const store: any = inject("vuex-store");
+    // eslint-disable-next-line
+    const brewCasksInfo = computed(() => store.state.brewCasksInfo);
+    // eslint-disable-next-line
+    const brewLsFormulas = computed(() => store.state.brewLsFormulas);
+
     const searchType = ref("cask");
     const searchName = ref("");
     const packageInfo = ref("");
     const status = ref("");
-
+    
+    const isInstalled = ref(false);
     //packageInfoPreTxt
     //isFormula
     //isInstalled
@@ -49,19 +58,22 @@ export default {
       if (searchName.value === "") {
         return;
       }
-      const brewInfo = new BrewInfo();
+      const packageInfoObj = new PackageInfo(brewCasksInfo.value, brewLsFormulas.value);
       let packageType = PackageType.formula;
       if (searchType.value === "cask") {
         packageType = PackageType.cask;
       }
-      packageInfo.value = await brewInfo.getPackageInfo(
+      await packageInfoObj.getPackageInfo(
         packageType,
         searchName.value,
         status
       );
+
+      packageInfo.value = packageInfoObj.packageInfoPreTxt
+      isInstalled.value = packageInfoObj.isInstalled
     }
 
-    return { searchType, packageInfo, searchName, status, getPackageInfo };
+    return { searchType, packageInfo, searchName, status, getPackageInfo, isInstalled };
   },
 };
 </script>
