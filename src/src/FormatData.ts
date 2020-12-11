@@ -2,14 +2,38 @@ export class FormatData {
   // eslint-disable-next-line
   brewCasksInfo: any[];
   // eslint-disable-next-line
-  brewLsFormulasStr: any[]
+  brewLsFormulas: any[]
   
   constructor (brewCasksInfoStr: string, brewLsFormulasStr: string , brewOutdatedStr: string){
     this.brewCasksInfo = JSON.parse( brewCasksInfoStr )
-    this.brewLsFormulasStr = JSON.parse( brewLsFormulasStr )
+    this.brewLsFormulas = JSON.parse( brewLsFormulasStr )
     const brewOutdated = JSON.parse(brewOutdatedStr)
-    console.log("add outdated info to formula and casks and outdated key to casks")
-    console.log(brewOutdated)
+
+    // eslint-disable-next-line 
+    brewOutdated.formulae.forEach( (r: any ) => {
+      this.brewLsFormulas.filter( f => {return f.name ===r.name }).forEach( row =>{
+        row.outdated = true;
+        row.outdatedData = r
+        row.outdatedNewVer = r.current_version
+      } )
+    });
+
     debugger;
+    // eslint-disable-next-line 
+    brewOutdated.casks.forEach( (r: any ) => {
+      this.brewCasksInfo.filter( f => {return f.token ===r.name }).forEach( row =>{
+        row.outdated = true;
+        row.outdatedData = r
+        row.outdatedNewVer = r.current_version
+      } )
+    });
+
+
+    this.brewCasksInfo.forEach(row => {
+      row.ver = row.version
+      if (row.auto_updates)  {row.ver = 'auto update'}  
+    });
+
+
   }
 }

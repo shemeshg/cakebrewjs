@@ -21,7 +21,7 @@ export class BrewInfo {
   }
 
   async getInfo(status: Ref) {
-    await this.runCmd("brew update", status)
+    //await this.runCmd("brew update", status)
     const brewLsCask =  await this.runCmd("brew ls --cask -1", status)
     
     const casksNames = this.getResultString( brewLsCask ).split("\n").filter((s) => { return s !== "" })

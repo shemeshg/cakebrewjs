@@ -5,26 +5,51 @@
       <br />
       {{ status }}
     </p>
+    <b-table
+      :items="brewCasksInfo"
+      :fields="brewCasksFields"
+      sort-icon-left
+      responsive="sm"
+    >
+
+    
+    </b-table>    
+
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from '@vue/composition-api'
+import { ref, Ref } from '@vue/composition-api'
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
   setup() {
     const brewInfo = new BrewInfo()
     const status = ref("")
-    
+    // eslint-disable-next-line 
+    const brewCasksInfo: Ref<any[]> = ref([])
+    // eslint-disable-next-line 
+    const brewLsFormulas: Ref<any[]>  = ref([])
 
-    function getInfo(){
+    const brewCasksFields = [
+          { key: 'token', sortable: true },
+          { key: 'desc', sortable: true },
+          { key: 'ver', label: 'Version', sortable: true },
+          { key: 'outdatedNewVer', label: 'Outdated', sortable: true }
+
+
+
+        ]
+
+    async function getInfo(){
       
-      return brewInfo.getInfo(status);
-
+      const data = await brewInfo.getInfo(status);
+      brewCasksInfo.value = data.brewCasksInfo
+      brewLsFormulas.value =  data.brewLsFormulas
     }
 
-    return {  getInfo, status }; // anything returned here will be available for the rest of the component
+    return {  getInfo, status, brewCasksInfo, 
+      brewLsFormulas, brewCasksFields }; 
   },
 }
 </script>
