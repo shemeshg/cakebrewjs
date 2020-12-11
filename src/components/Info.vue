@@ -36,6 +36,7 @@ export default {
     const packageInfo = ref("");
     const status = ref("");
 
+    //packageInfoPreTxt
     //isFormula
     //isInstalled
     //isPinned
