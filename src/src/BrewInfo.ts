@@ -2,6 +2,11 @@ import { ShellCmd, ExecRunStatus } from "./ShellCmd";
 import { FormatData } from "./FormatData"
 import { Ref } from '@vue/composition-api'
 
+export enum PackageType{
+  cask,
+  formula
+}
+
 export class BrewInfo {
 
   private async runCmd(str: string, status: Ref){  
@@ -18,6 +23,16 @@ export class BrewInfo {
 
   private  getResultString(sc: ShellCmd){
     return sc.result.filter((r)=>{return r.exeStatus === ExecRunStatus.SUCCESS}).map( (r)=>{return  r.str}).join(" ")
+  }
+
+  async getPackageInfo(packageType: PackageType, packageName: string, status: Ref){
+    let cmd = `brew info --cask ${packageName}`
+    if (packageType === PackageType.formula) {
+      cmd = `brew info --formula ${packageName}`
+    }
+    const cmdObj =  await this.runCmd(cmd, status)
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
   }
 
   async getInfo(status: Ref) {

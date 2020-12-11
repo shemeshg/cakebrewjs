@@ -125,9 +125,7 @@ export default {
     // eslint-disable-next-line
     const store: any = inject("vuex-store");
 
-
-    debugger;
-    const brewInfo = new BrewInfo();
+    
     const status = ref("");
 
     
@@ -155,6 +153,7 @@ export default {
     ];
 
     async function getInfo() {
+      const brewInfo = new BrewInfo();
       const data = await brewInfo.getInfo(status);
       store.commit("setBrewCasksInfo", data.brewCasksInfo)
       store.commit("setBrewLsFormulas", data.brewLsFormulas)
