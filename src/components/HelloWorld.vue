@@ -122,6 +122,7 @@ import { BrewInfo } from "../src/BrewInfo";
 
 export default {
   setup() {
+    debugger;
     const brewInfo = new BrewInfo();
     const status = ref("");
 
