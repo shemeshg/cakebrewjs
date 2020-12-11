@@ -1,6 +1,9 @@
 <template>
   <b-container fluid>
     <p>
+      {{count}} <span @click="increment"> increment </span>
+    </p>
+    <p>
       <b-button size="sm" class="mr-1" @click="getInfo"
         >getInfo</b-button
       >
@@ -117,11 +120,16 @@
 </template>
 
 <script lang="ts">
-import { ref, Ref } from "@vue/composition-api";
+import { computed, inject , ref, Ref } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
   setup() {
+    // eslint-disable-next-line
+    const store: any = inject("vuex-store");
+    const count = computed(() => store.state.count);
+    const increment = () => store.commit("increment");
+
     debugger;
     const brewInfo = new BrewInfo();
     const status = ref("");
@@ -179,6 +187,9 @@ export default {
       filterFormula,
       infoFormula,
       brewFormulasFields,
+      // store
+      count,
+      increment,
     };
   },
 };
