@@ -8,7 +8,10 @@ export class PackageInfo {
     private brewLsFormulas: any[]
 
     packageInfoPreTxt = ""
-    isFormula = false
+    packageType: PackageType = PackageType.formula
+    packageName = ""
+    usedIn: string[] = []
+    
     // eslint-disable-next-line
     localSearchItem: any[] = [];
 
@@ -19,7 +22,8 @@ export class PackageInfo {
     }
 
     async getPackageInfo(packageType: PackageType, packageName: string, status: Ref){
-      this.isFormula = packageType === PackageType.formula;
+      this.packageType = packageType;
+      this.packageName = packageName;
       const brewInfo = new BrewInfo();
       this.packageInfoPreTxt = await brewInfo.getPackageInfo(
         packageType,
@@ -29,10 +33,11 @@ export class PackageInfo {
       debugger;
       if (packageType === PackageType.formula){
         this.localSearchItem = this.brewLsFormulas.filter( (row)=>{ return row.name === packageName})
+        this.usedIn = this.brewLsFormulas.filter( (row)=>{ return row.dependencies.indexOf(packageName) > -1 || row.build_dependencies.indexOf(packageName) > -1}).map( (row)=>{return row.name} )
       } else {
         this.localSearchItem = this.brewCasksInfo.filter( (row)=>{ return row.token === packageName})
       }
-      
+      debugger;
       return;
 
     }

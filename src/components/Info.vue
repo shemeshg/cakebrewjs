@@ -18,15 +18,16 @@
     <p>
       {{ status }}
     </p>
-    <pre
-      >{{ packageInfo }}    
+    <pre>{{ packageInfo }}         
   </pre>
+  <p v-if="usedIn.length > 0"> used in: {{usedIn}}</p> 
+
   <p> is installed: {{isInstalled}} </p>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, computed, inject } from "@vue/composition-api";
+import { ref, Ref, computed, inject } from "@vue/composition-api";
 import { PackageType } from "../src/BrewInfo";
 import { PackageInfo } from "../src/PackageInfo";
 
@@ -43,6 +44,7 @@ export default {
     const searchName = ref("");
     const packageInfo = ref("");
     const status = ref("");
+    const usedIn: Ref<string[]> = ref([]);
     
     const isInstalled = ref(false);
     //packageInfoPreTxt
@@ -71,9 +73,11 @@ export default {
 
       packageInfo.value = packageInfoObj.packageInfoPreTxt
       isInstalled.value = packageInfoObj.isInstalled
+      usedIn.value = packageInfoObj.usedIn
+      debugger; 
     }
 
-    return { searchType, packageInfo, searchName, status, getPackageInfo, isInstalled };
+    return { searchType, packageInfo, searchName, status, getPackageInfo, isInstalled, usedIn };
   },
 };
 </script>
