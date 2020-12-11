@@ -15,11 +15,6 @@ export class FormatData {
         row.outdated = true;
         row.outdatedData = r
         row.outdatedNewVer = r.current_version
-
-        row.ver = row.linked_keg
-        if (row.pinned) {
-          row.ver = "📌" + row.ver
-        }
       } )
     });
 
@@ -38,6 +33,15 @@ export class FormatData {
       row.ver = row.version
       if (row.auto_updates)  {row.ver = 'auto update'}  
     });
+
+    this.brewLsFormulas.forEach(row => {
+      row.ver = row.installed[0].version
+      if (row.pinned) {
+        row.ver = "📌 " + row.ver
+      }
+    });
+
+
 
 
   }
