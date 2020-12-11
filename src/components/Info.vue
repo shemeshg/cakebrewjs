@@ -39,6 +39,7 @@ export default {
     //isFormula
     //isInstalled
     //isPinned
+    //isOutdated
     //usePackages
     //usedByPackages
 
