@@ -1,9 +1,6 @@
 <template>
   <b-container fluid>
     <p>
-      {{count}} <span @click="increment"> increment </span>
-    </p>
-    <p>
       <b-button size="sm" class="mr-1" @click="getInfo"
         >getInfo</b-button
       >
@@ -120,15 +117,14 @@
 </template>
 
 <script lang="ts">
-import { computed, inject , ref, Ref } from "@vue/composition-api";
+import { computed, inject , ref } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
   setup() {
     // eslint-disable-next-line
     const store: any = inject("vuex-store");
-    const count = computed(() => store.state.count);
-    const increment = () => store.commit("increment");
+
 
     debugger;
     const brewInfo = new BrewInfo();
@@ -138,9 +134,9 @@ export default {
     const filterCask = ref("");
     const filterFormula = ref("");
     // eslint-disable-next-line
-    const brewCasksInfo: Ref<any[]> = ref([]);
+    const brewCasksInfo = computed(() => store.state.brewCasksInfo);
     // eslint-disable-next-line
-    const brewLsFormulas: Ref<any[]> = ref([]);
+    const brewLsFormulas = computed(() => store.state.brewLsFormulas);
 
     const brewCasksFields = [
       { key: "token", sortable: true },
@@ -160,8 +156,8 @@ export default {
 
     async function getInfo() {
       const data = await brewInfo.getInfo(status);
-      brewCasksInfo.value = data.brewCasksInfo;
-      brewLsFormulas.value = data.brewLsFormulas;
+      store.commit("setBrewCasksInfo", data.brewCasksInfo)
+      store.commit("setBrewLsFormulas", data.brewLsFormulas)
     }
 
 
@@ -187,9 +183,6 @@ export default {
       filterFormula,
       infoFormula,
       brewFormulasFields,
-      // store
-      count,
-      increment,
     };
   },
 };

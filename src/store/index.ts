@@ -5,10 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    count: 0,
+    brewCasksInfo: [],
+    brewLsFormulas: [],
   },
   mutations: {
-    increment: state => state.count++,
+    setBrewCasksInfo: (state, val) => {
+      state.brewCasksInfo = val;
+    },
+    setBrewLsFormulas: (state, val) => {
+      state.brewLsFormulas = val;
+    }    
   },
   actions: {
   },
