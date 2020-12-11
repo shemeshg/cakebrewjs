@@ -18,7 +18,7 @@ export class FormatData {
       } )
     });
 
-    debugger;
+
     // eslint-disable-next-line 
     brewOutdated.casks.forEach( (r: any ) => {
       this.brewCasksInfo.filter( f => {return f.token ===r.name }).forEach( row =>{
