@@ -15,6 +15,11 @@ export class FormatData {
         row.outdated = true;
         row.outdatedData = r
         row.outdatedNewVer = r.current_version
+
+        row.ver = row.linked_keg
+        if (row.pinned) {
+          row.ver = "📌" + row.ver
+        }
       } )
     });
 

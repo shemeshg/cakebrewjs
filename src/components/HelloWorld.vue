@@ -1,71 +1,109 @@
 <template>
-  <div class="hello">
+  <b-container fluid>
     <p>
-      <b-button size="sm" class="mr-1" @click="getInfo">getInfol</b-button>
+      <b-button size="sm" class="mr-1" @click="getInfoCask"
+        >getInfoCask</b-button
+      >
       <b-button size="sm" class="mr-1">Upgrade all</b-button>
-
-
 
       <br />
       {{ status }}
     </p>
-    <b-table
-      :items="brewCasksInfo"
-      :fields="brewCasksFields"
-      sort-icon-left
-      responsive="sm"
-    >
-      <template #cell(actions)="row">
-        <span  @click="info(row.item)" class="btn">
-          ℹ️
-        </span>
-      </template>
-    
-    </b-table>    
 
-  </div>
+    <div>
+      <b-button v-b-toggle.collapse-3 class="m-1">Toggle Cask</b-button>
+      <b-collapse visible id="collapse-3">
+        <b-card>
+          <b-row>
+            <b-col lg="6" class="my-1">
+              <b-form-group
+                label="Filter"
+                label-cols-sm="3"
+                label-align-sm="left"
+                label-size="sm"
+                label-for="filterInput"
+                class="mb-0"
+              >
+                <b-input-group size="sm">
+                  <b-form-input
+                    v-model="filterCask"
+                    type="search"
+                    id="filterInput"
+                    placeholder="Type to Search"
+                  ></b-form-input>
+                  <b-input-group-append>
+                    <b-button :disabled="!filterCask" @click="filterCask = ''"
+                      >Clear</b-button
+                    >
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+            </b-col>
+          </b-row>
+
+          <b-table
+            :items="brewCasksInfo"
+            :fields="brewCasksFields"
+            sort-icon-left
+            responsive="sm"
+            :filter="filterCask"
+            :filter-included-fields="['token', 'desc']"
+          >
+            <template #cell(actions)="row">
+              <span @click="infoCask(row.item)" class="btn"> ℹ️ </span>
+            </template>
+          </b-table>
+          
+        </b-card>
+      </b-collapse>
+    </div>
+  </b-container>
 </template>
 
 <script lang="ts">
-import { ref, Ref } from '@vue/composition-api'
+import { ref, Ref } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
   setup() {
-    const brewInfo = new BrewInfo()
-    const status = ref("")
-    // eslint-disable-next-line 
-    const brewCasksInfo: Ref<any[]> = ref([])
-    // eslint-disable-next-line 
-    const brewLsFormulas: Ref<any[]>  = ref([])
+    const brewInfo = new BrewInfo();
+    const status = ref("");
+    const filterCask = ref("");
+    // eslint-disable-next-line
+    const brewCasksInfo: Ref<any[]> = ref([]);
+    // eslint-disable-next-line
+    const brewLsFormulas: Ref<any[]> = ref([]);
 
     const brewCasksFields = [
-          { key: 'token', sortable: true },
-          { key: 'desc', sortable: true },
-          { key: 'ver', label: 'Version', sortable: true },
-          { key: 'outdatedNewVer', label: 'Outdated', sortable: true },
-          { key: 'actions', label: ' ' }
-          
+      { key: "token", sortable: true },
+      { key: "desc", sortable: true },
+      { key: "ver", label: "Version", sortable: true },
+      { key: "outdatedNewVer", label: "Outdated", sortable: true },
+      { key: "actions", label: " " },
+    ];
 
-
-
-        ]
-
-    async function getInfo(){      
+    async function getInfoCask() {
       const data = await brewInfo.getInfo(status);
-      brewCasksInfo.value = data.brewCasksInfo
-      brewLsFormulas.value =  data.brewLsFormulas
+      brewCasksInfo.value = data.brewCasksInfo;
+      brewLsFormulas.value = data.brewLsFormulas;
     }
 
     // eslint-disable-next-line
-    function info(r: any){
-      console.log(r)
+    function infoCask(r: any) {
+      console.log(r);
     }
 
-    return {  getInfo, status, brewCasksInfo, 
-      brewLsFormulas, brewCasksFields, info }; 
+    return {
+      getInfoCask,
+      status,
+      brewCasksInfo,
+      brewLsFormulas,
+      brewCasksFields,
+      infoCask,
+      filterCask,
+    };
   },
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
