@@ -12,12 +12,17 @@ export class BrewInfo {
   private async runCmd(str: string, status: Ref){  
     const shellCmd = new ShellCmd(str);
     status.value = `Running: ${shellCmd.cmd}`
+    try {
     await shellCmd.doCmd();
     if (shellCmd.execRunStatus !== ExecRunStatus.SUCCESS) { 
       status.value = `Failed  ${shellCmd.cmd}: ${shellCmd.result[shellCmd.result.length - 1].str}`;
       throw new Error( status.value )
     }
     return shellCmd;
+  } catch(e) {
+    status.value = e.message
+    throw e
+  }
   }
 
 
@@ -111,7 +116,7 @@ export class BrewInfo {
     try { 
     //await this.runCmd("brew update", status)
       debugger;
-    const brewLsCask =  await this.runCmd("GGbrew ls --cask -1", status)
+    const brewLsCask =  await this.runCmd("brew ls --cask -1", status)
     
     const casksNames = this.getResultString( brewLsCask ).split("\n").filter((s) => { return s !== "" })
     
@@ -119,8 +124,9 @@ export class BrewInfo {
     const brewLsFormulas = await this.runCmd("brew info --json --installed", status);
     const brewOutdated = await this.runCmd("brew outdated --json=v2", status);
 
-    return new FormatData(this.getResultString( brewCasksInfo ), this.getResultString( brewLsFormulas ),this.getResultString( brewOutdated ) );
     status.value = `Finished`
+    return new FormatData(this.getResultString( brewCasksInfo ), this.getResultString( brewLsFormulas ),this.getResultString( brewOutdated ) );
+    
     } catch (e) {
       debugger;
       console.log(e)

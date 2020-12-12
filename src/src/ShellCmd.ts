@@ -27,7 +27,7 @@ export class ShellCmd {
   private child: any;
 
   constructor(cmd: string, result: ExeOut[] = []) {
-    this.cmd = cmd;
+    this.cmd =  cmd;
     this.result = result;
 
   }
@@ -37,33 +37,37 @@ export class ShellCmd {
   }
 
   doCmd() {
-    this.result.length = 0
-    const result = this.result;
-    let exitCodeExe = -1;
-    let enddedBeforOndata = false;
 
-    this.execRunStatus = ExecRunStatus.RUNNING
-    // eslint-disable-next-line 
-    this.child = exec(this.cmd, (e: any, std: string, err: string) => {
-      if (exitCodeExe === -1) {
-        enddedBeforOndata = true
-        if (e !== null && result.length === 0) {
-          result.push({ exeStatus: ExeStatus.ERROR, str: err });
+
+
+    return new Promise((resolve, reject) => {
+
+      this.result.length = 0
+      const result = this.result;
+      let exitCodeExe = -1;
+      let enddedBeforOndata = false;
+  
+      this.execRunStatus = ExecRunStatus.RUNNING
+      // eslint-disable-next-line 
+      this.child = exec(this.cmd, (e: any, std: string, err: string) => {
+        if (exitCodeExe === -1) {
+          enddedBeforOndata = true
+          if (e !== null && result.length === 0) {
+            result.push({ exeStatus: ExeStatus.ERROR, str: err });
+          }
         }
-      }
 
-      if (e === null) {
-        this.execRunStatus = ExecRunStatus.SUCCESS
-      } else {
-        this.execRunStatus = ExecRunStatus.ERROR
-        if (e.code === null && e.message) {
-          result.push({ exeStatus: ExeStatus.ERROR, str: e.message });
+        if (e === null) {
+          this.execRunStatus = ExecRunStatus.SUCCESS
+          resolve(this.execRunStatus)
+        } else {
+          this.execRunStatus = ExecRunStatus.ERROR
+          if (e.code === null && e.message) {
+            result.push({ exeStatus: ExeStatus.ERROR, str: e.message });
+          }
+          reject(e)
         }
-        
-      }
-    });
-
-    let promise = new Promise((resolve) => {
+      });
 
       this.child.stdout.on('data', function (data: string) {
         result.push({ exeStatus: ExeStatus.SUCCESS, str: data });
@@ -77,13 +81,16 @@ export class ShellCmd {
         exitCodeExe = exitCode;
         resolve(exitCode)
       });
+
+      if (enddedBeforOndata) {
+        this.execRunStatus = ExecRunStatus.ERROR
+        resolve(exitCodeExe)
+      }
+
     })
 
-    if (enddedBeforOndata) {
-      this.execRunStatus = ExecRunStatus.ERROR
-      promise = Promise.resolve(exitCodeExe)
-    }
-    return promise;
+
+
   }
 
 }
