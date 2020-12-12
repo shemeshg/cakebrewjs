@@ -31,9 +31,9 @@ export class BrewInfo {
   }
 
   async getPackageInfo(packageType: PackageType, packageName: string, status: Ref){
-    let cmd = `brew info --cask ${packageName}`
+    let cmd = `/usr/local/bin/brew info --cask ${packageName}`
     if (packageType === PackageType.formula) {
-      cmd = `brew info --formula ${packageName}`
+      cmd = `/usr/local/bin/brew info --formula ${packageName}`
     }
     const cmdObj =  await this.runCmd(cmd, status)
     status.value = `Finished`
@@ -45,9 +45,9 @@ export class BrewInfo {
   }
 
   async doUpgrade(packageType: PackageType, packageName: string, status: Ref){
-    let cmd = `brew upgrade --cask ${packageName}`
+    let cmd = `/usr/local/bin/brew upgrade --cask ${packageName}`
     if (packageType === PackageType.formula) {
-      cmd = `brew upgrade --formula ${packageName}`
+      cmd = `/usr/local/bin/brew upgrade --formula ${packageName}`
     }
     
     const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
@@ -57,7 +57,7 @@ export class BrewInfo {
 
 
   async doUpgradeAll(status: Ref){
-    const cmd = `brew upgrade`
+    const cmd = `/usr/local/bin/brew upgrade`
     
     const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
     status.value = `Finished`
@@ -65,7 +65,7 @@ export class BrewInfo {
   }
 
   async doDoctor(status: Ref){
-    const cmd = `brew doctor`
+    const cmd = `/usr/local/bin/brew doctor`
     
     const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
     status.value = `Finished`
@@ -73,9 +73,9 @@ export class BrewInfo {
   }
 
   async doUninstall(packageType: PackageType, packageName: string, status: Ref){
-    let cmd = `brew uninstall --cask ${packageName}`
+    let cmd = `/usr/local/bin/brew uninstall --cask ${packageName}`
     if (packageType === PackageType.formula) {
-      cmd = `brew uninstall --formula ${packageName}`
+      cmd = `/usr/local/bin/brew uninstall --formula ${packageName}`
     }
     
     const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
@@ -84,9 +84,9 @@ export class BrewInfo {
   }
 
   async doInstall(packageType: PackageType, packageName: string, status: Ref){
-    let cmd = `brew install --cask ${packageName}`
+    let cmd = `/usr/local/bin/brew install --cask ${packageName}`
     if (packageType === PackageType.formula) {
-      cmd = `brew install --formula ${packageName}`
+      cmd = `/usr/local/bin/brew install --formula ${packageName}`
     }
     
     const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
@@ -96,7 +96,7 @@ export class BrewInfo {
 
 
   async doPin( packageName: string, status: Ref){
-    const cmd = `brew pin ${packageName}`
+    const cmd = `/usr/local/bin/brew pin ${packageName}`
 
     const cmdObj =  await this.runCmd(cmd, status)
 
@@ -105,7 +105,7 @@ export class BrewInfo {
   }
 
   async doUnpin( packageName: string, status: Ref){
-    const cmd = `brew unpin ${packageName}`
+    const cmd = `/usr/local/bin/brew unpin ${packageName}`
 
     const cmdObj =  await this.runCmd(cmd, status)
 
@@ -114,15 +114,15 @@ export class BrewInfo {
   }
   async getInfo(status: Ref) {
     try { 
-    //await this.runCmd("brew update", status)
-      debugger;
-    const brewLsCask =  await this.runCmd("brew ls --cask -1", status)
+    await this.runCmd("/usr/local/bin/brew update", status)
+
+    const brewLsCask =  await this.runCmd("/usr/local/bin/brew ls --cask -1", status)
     
     const casksNames = this.getResultString( brewLsCask ).split("\n").filter((s) => { return s !== "" })
     
-    const brewCasksInfo = await this.runCmd( `brew cask info --json=v1 ${casksNames.join(" ")}` , status)  
-    const brewLsFormulas = await this.runCmd("brew info --json --installed", status);
-    const brewOutdated = await this.runCmd("brew outdated --json=v2", status);
+    const brewCasksInfo = await this.runCmd( `/usr/local/bin/brew cask info --json=v1 ${casksNames.join(" ")}` , status)  
+    const brewLsFormulas = await this.runCmd("/usr/local/bin/brew info --json --installed", status);
+    const brewOutdated = await this.runCmd("/usr/local/bin/brew outdated --json=v2", status);
 
     status.value = `Finished`
     return new FormatData(this.getResultString( brewCasksInfo ), this.getResultString( brewLsFormulas ),this.getResultString( brewOutdated ) );
