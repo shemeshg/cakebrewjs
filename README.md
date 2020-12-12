@@ -1,6 +1,19 @@
 # Cakebrewjs
 
-Homebrew GUI App for OS X written in electron
+Homebrew GUI App written in electron
+
+## Install
+
+```
+brew cask install shemeshg/tap/cakebrewjs
+```
+
+## Uninstall
+
+```
+brew cask uninstall cakebrewjs
+brew untap shemeshg/tap
+```
 
 ## Project setup
 
