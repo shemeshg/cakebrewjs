@@ -1,15 +1,13 @@
 <template>
   <b-container fluid>
     <p>
-      <b-button size="sm" class="mr-1" @click="getInfo"
-        >getInfo</b-button
-      >
+      <b-button size="sm" class="mr-1" @click="getInfo" >Refresh</b-button>
       <b-button size="sm" class="mr-1">Upgrade all</b-button>
-
-      <br />
+      <br />      
+    </p>
+    <p v-if="status !== 'Finished'" >
       {{ status }}
     </p>
-
     <div>
       <b-button v-b-toggle.collapse-cask class="m-1">Toggle Cask</b-button>
       <b-collapse visible id="collapse-cask">

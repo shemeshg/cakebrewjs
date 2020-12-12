@@ -42,6 +42,30 @@ export class PackageInfo {
 
     }
 
+    get isFormuls() {
+      return this.packageType  === PackageType.formula
+    }
+
+    get isShowInstall(){
+      return Boolean( this.packageInfoPreTxt ) && !this.isInstalled
+    }
+
+    get isShowUsedIn(){
+      return this.isInstalled && this.isFormuls
+    }
+
+    get isShowUpgrade(){
+      return this.isInstalled && this.localSearchItem[0].outdated
+    }
+
+    get isShowPin(){
+      return this.isFormuls && this.isInstalled && !this.localSearchItem[0].pinned
+    }
+
+    get isShowUnpin(){
+      return this.isFormuls && this.isInstalled && this.localSearchItem[0].pinned
+    }
+
     get isInstalled(){
       return this.localSearchItem.length > 0
     }
