@@ -25,6 +25,7 @@ export class FormatData {
         row.outdated = true;
         row.outdatedData = r
         row.outdatedNewVer = r.current_version
+        row.version = r.installed_versions
       } )
     });
 

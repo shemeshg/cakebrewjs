@@ -113,7 +113,7 @@ export class BrewInfo {
     return this.getResultString( cmdObj )
   }
   async getInfo(status: Ref) {
-    try { 
+
     await this.runCmd("/usr/local/bin/brew update", status)
 
     const brewLsCask =  await this.runCmd("/usr/local/bin/brew ls --cask -1", status)
@@ -127,11 +127,7 @@ export class BrewInfo {
     status.value = `Finished`
     return new FormatData(this.getResultString( brewCasksInfo ), this.getResultString( brewLsFormulas ),this.getResultString( brewOutdated ) );
     
-    } catch (e) {
-      debugger;
-      console.log(e)
-      throw e
-    }
+
     
   }
 }
