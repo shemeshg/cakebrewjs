@@ -35,6 +35,62 @@ export class BrewInfo {
     return this.getResultString( cmdObj )
   }
 
+  private externalTerminalCmd(cmd: string){
+    return `echo "${cmd};rm /tmp/tmp.sh;" > /tmp/tmp.sh ; chmod +x /tmp/tmp.sh ; open -a Terminal /tmp/tmp.sh ; `
+  }
+
+  async doUpgrade(packageType: PackageType, packageName: string, status: Ref){
+    let cmd = `brew upgrade --cask ${packageName}`
+    if (packageType === PackageType.formula) {
+      cmd = `brew upgrade --formula ${packageName}`
+    }
+    
+    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
+  }
+
+
+  async doUninstall(packageType: PackageType, packageName: string, status: Ref){
+    let cmd = `brew uninstall --cask ${packageName}`
+    if (packageType === PackageType.formula) {
+      cmd = `brew uninstall --formula ${packageName}`
+    }
+    
+    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
+  }
+
+  async doInstall(packageType: PackageType, packageName: string, status: Ref){
+    let cmd = `brew install --cask ${packageName}`
+    if (packageType === PackageType.formula) {
+      cmd = `brew install --formula ${packageName}`
+    }
+    
+    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
+  }
+
+
+  async doPin( packageName: string, status: Ref){
+    const cmd = `brew pin ${packageName}`
+
+    const cmdObj =  await this.runCmd(cmd, status)
+
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
+  }
+
+  async doUnpin( packageName: string, status: Ref){
+    const cmd = `brew unpin ${packageName}`
+
+    const cmdObj =  await this.runCmd(cmd, status)
+
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
+  }
   async getInfo(status: Ref) {
     //await this.runCmd("brew update", status)
     const brewLsCask =  await this.runCmd("brew ls --cask -1", status)

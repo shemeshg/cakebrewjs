@@ -22,11 +22,11 @@
 <span v-if="isShowUsedIn"> Used in: {{usedIn}}</span>       
   </pre>
  <p>
-      <b-button size="sm" class="mr-1"  v-if="isShowPin">Pin</b-button>
-      <b-button size="sm" class="mr-1"  v-if="isShowUnpin">Unpin</b-button>
-      <b-button size="sm" class="mr-1"  v-if="isShowUpgrade">Upgrade</b-button>
-      <b-button size="sm" class="mr-1"  v-if="isShowInstall">Install</b-button>
-      <b-button size="sm" class="mr-1"  v-if="isInstalled">Uninstall</b-button>
+      <b-button size="sm" class="mr-1"  v-if="isShowPin" @click="doPin">Pin</b-button>
+      <b-button size="sm" class="mr-1"  v-if="isShowUnpin" @click="doUnpin">Unpin</b-button>
+      <b-button size="sm" class="mr-1"  v-if="isShowUpgrade" @click="doUpgrade">Upgrade</b-button>
+      <b-button size="sm" class="mr-1"  v-if="isShowInstall" @click="doInstall">Install</b-button>
+      <b-button size="sm" class="mr-1"  v-if="isInstalled" @click="doUninstall">Uninstall</b-button>
 </p>      
 
 
@@ -62,7 +62,7 @@ export default {
 
     let packageInfoObj: PackageInfo;
 
-    async function getPackageInfo() {
+    function resetForm(){
       packageInfo.value = ""      
       usedIn.value = []
 
@@ -72,6 +72,43 @@ export default {
       isShowUpgrade.value = false
       isShowInstall.value = false
       isInstalled.value = false
+    }
+
+
+    function doUpgrade(){
+      resetForm();
+      return packageInfoObj.doUpgrade(status)
+    }
+
+    async function doUninstall(){
+      resetForm();
+      await packageInfoObj.doUninstall(status)
+      store.commit("setBrewCasksInfo", [])
+      store.commit("setBrewLsFormulas", [])
+    }
+
+    async function doInstall(){
+      resetForm();
+      await packageInfoObj.doInstall(status)
+      store.commit("setBrewCasksInfo", [])
+      store.commit("setBrewLsFormulas", [])      
+    }
+
+    function doPin() {
+      resetForm()
+      return packageInfoObj.doPin(status)
+    }
+
+
+
+    function doUnpin() {
+      resetForm()
+      return packageInfoObj.doUnpin(status)
+    }
+
+    async function getPackageInfo() {
+      resetForm()
+
 
       if (searchName.value === "") {
         return;
@@ -97,11 +134,12 @@ export default {
       isShowInstall.value = packageInfoObj.isShowInstall
       isInstalled.value = packageInfoObj.isInstalled
       
-      debugger; 
+
     }
 
     return { searchType, packageInfo, searchName, status, getPackageInfo, isShowUsedIn, usedIn, 
-          isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled };
+          isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled,
+          doPin, doUnpin, doUpgrade, doUninstall, doInstall };
   },
 };
 </script>

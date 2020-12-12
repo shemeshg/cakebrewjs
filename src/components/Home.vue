@@ -127,6 +127,8 @@ export default {
     // eslint-disable-next-line
     const brewLsFormulas = computed(() => store.state.brewLsFormulas);
     
+
+
     const status = ref("");
 
     
@@ -157,7 +159,10 @@ export default {
       store.commit("setBrewLsFormulas", data.brewLsFormulas)
     }
 
-
+    if (store.state.isFirstOpened) {
+      store.commit("setIsFirstOpened", false)
+      getInfo();
+    }
 
     // eslint-disable-next-line
     function infoCask(r: any) {
