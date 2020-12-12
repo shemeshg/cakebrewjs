@@ -6,9 +6,9 @@
       <b-button size="sm" class="mr-1" @click="doDoctor">Doctor</b-button>
       <br />      
     </p>
-    <p v-if="status !== 'Finished'" >
+    <b-alert show variant="info" v-if="status !== 'Finished'" >
       {{ status }}
-    </p>
+    </b-alert>
     <div>
       <b-button v-b-toggle.collapse-cask class="m-1">Toggle Cask</b-button>
       <b-collapse visible id="collapse-cask">
