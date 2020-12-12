@@ -59,6 +59,7 @@ export class ShellCmd {
         if (e.code === null && e.message) {
           result.push({ exeStatus: ExeStatus.ERROR, str: e.message });
         }
+        
       }
     });
 

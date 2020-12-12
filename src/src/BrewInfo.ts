@@ -51,6 +51,22 @@ export class BrewInfo {
   }
 
 
+  async doUpgradeAll(status: Ref){
+    const cmd = `brew upgrade`
+    
+    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
+  }
+
+  async doDoctor(status: Ref){
+    const cmd = `brew doctor`
+    
+    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    status.value = `Finished`
+    return this.getResultString( cmdObj )
+  }
+
   async doUninstall(packageType: PackageType, packageName: string, status: Ref){
     let cmd = `brew uninstall --cask ${packageName}`
     if (packageType === PackageType.formula) {
@@ -92,8 +108,10 @@ export class BrewInfo {
     return this.getResultString( cmdObj )
   }
   async getInfo(status: Ref) {
+    try { 
     //await this.runCmd("brew update", status)
-    const brewLsCask =  await this.runCmd("brew ls --cask -1", status)
+      debugger;
+    const brewLsCask =  await this.runCmd("GGbrew ls --cask -1", status)
     
     const casksNames = this.getResultString( brewLsCask ).split("\n").filter((s) => { return s !== "" })
     
@@ -101,8 +119,13 @@ export class BrewInfo {
     const brewLsFormulas = await this.runCmd("brew info --json --installed", status);
     const brewOutdated = await this.runCmd("brew outdated --json=v2", status);
 
-    status.value = `Finished`
-
     return new FormatData(this.getResultString( brewCasksInfo ), this.getResultString( brewLsFormulas ),this.getResultString( brewOutdated ) );
+    status.value = `Finished`
+    } catch (e) {
+      debugger;
+      console.log(e)
+      throw e
+    }
+    
   }
 }

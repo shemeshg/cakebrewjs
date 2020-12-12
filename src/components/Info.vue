@@ -39,7 +39,8 @@ import { PackageType } from "../src/BrewInfo";
 import { PackageInfo } from "../src/PackageInfo";
 
 export default {
-  setup() {
+  /* eslint-disable */
+  setup(prop: any, ctx: any) {
     // eslint-disable-next-line
     const store: any = inject("vuex-store");
     // eslint-disable-next-line
@@ -49,6 +50,8 @@ export default {
 
     const searchType = ref("cask");
     const searchName = ref("");
+    
+
     const packageInfo = ref("");
     const status = ref("");
     const usedIn: Ref<string[]> = ref([]);
@@ -59,6 +62,8 @@ export default {
     const isShowUpgrade = ref(false);
     const isShowInstall = ref(false);
     const isInstalled = ref(false);
+
+
 
     let packageInfoObj: PackageInfo;
 
@@ -135,6 +140,14 @@ export default {
       isInstalled.value = packageInfoObj.isInstalled
       
 
+    }
+
+
+    if (ctx.root.$route.params.p) {
+      const uri = JSON.parse( decodeURI( ctx.root.$route.params.p) )
+      searchType.value = uri.searchType;
+      searchName.value = uri.searchName;
+      getPackageInfo();
     }
 
     return { searchType, packageInfo, searchName, status, getPackageInfo, isShowUsedIn, usedIn, 

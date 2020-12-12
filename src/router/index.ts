@@ -12,7 +12,7 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
-    path: '/info',
+    path: '/info/:p?',
     name: 'Info',
     component: Info
   },  

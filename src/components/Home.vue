@@ -2,7 +2,8 @@
   <b-container fluid>
     <p>
       <b-button size="sm" class="mr-1" @click="getInfo" >Refresh</b-button>
-      <b-button size="sm" class="mr-1">Upgrade all</b-button>
+      <b-button size="sm" class="mr-1" @click="doUpgradeAll">Upgrade all ({{countUpgradable}})</b-button>
+      <b-button size="sm" class="mr-1" @click="doDoctor">Doctor</b-button>
       <br />      
     </p>
     <p v-if="status !== 'Finished'" >
@@ -119,7 +120,8 @@ import { computed, inject , ref } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
-  setup() {
+  /* eslint-disable */
+  setup(prop: any, ctx: any) {
     // eslint-disable-next-line
     const store: any = inject("vuex-store");
     // eslint-disable-next-line
@@ -127,7 +129,10 @@ export default {
     // eslint-disable-next-line
     const brewLsFormulas = computed(() => store.state.brewLsFormulas);
     
-
+    const countUpgradable = computed(() => { 
+      // eslint-disable-next-line
+      return  brewCasksInfo.value.filter ( (row: any)=>{return row.outdated}).length + brewLsFormulas.value.filter ( (row: any)=>{return row.outdated}).length 
+    })
 
     const status = ref("");
 
@@ -152,6 +157,19 @@ export default {
       { key: "actions", label: " " },
     ];
 
+    async function doUpgradeAll(){
+      store.commit("setBrewCasksInfo", [])
+      store.commit("setBrewLsFormulas", [])     
+      const brewInfo = new BrewInfo();
+      await brewInfo.doUpgradeAll(status); 
+    }
+
+    async function doDoctor(){   
+      const brewInfo = new BrewInfo();
+      await brewInfo.doDoctor(status); 
+    }
+
+
     async function getInfo() {
       const brewInfo = new BrewInfo();
       const data = await brewInfo.getInfo(status);
@@ -166,12 +184,12 @@ export default {
 
     // eslint-disable-next-line
     function infoCask(r: any) {
-      console.log(r);
+      ctx.root.$router.push({path: `/info/${encodeURI( JSON.stringify( { searchType: "cask", searchName: r.token}))}` })
     }
 
     // eslint-disable-next-line
     function infoFormula(r: any) {
-      console.log(r);
+      ctx.root.$router.push({path: `/info/${encodeURI( JSON.stringify( { searchType: "formula", searchName: r.name}))}` })
     }
 
     return {
@@ -185,6 +203,9 @@ export default {
       filterFormula,
       infoFormula,
       brewFormulasFields,
+      doUpgradeAll,
+      doDoctor,
+      countUpgradable,
     };
   },
 };
