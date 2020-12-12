@@ -2,6 +2,10 @@
 
 Homebrew GUI App written in electron
 
+https://github.com/shemeshg/cakebrewjs
+
+https://sourceforge.net/p/cakebrewjs
+
 ## Install
 
 ```
