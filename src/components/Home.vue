@@ -134,7 +134,7 @@ export default {
       return  brewCasksInfo.value.filter ( (row: any)=>{return row.outdated}).length + brewLsFormulas.value.filter ( (row: any)=>{return row.outdated}).length 
     })
 
-    const status = ref("");
+    const status = ref("Finished");
 
     
     const filterCask = ref("");

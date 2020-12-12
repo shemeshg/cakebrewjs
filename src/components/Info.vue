@@ -53,7 +53,7 @@ export default {
     
 
     const packageInfo = ref("");
-    const status = ref("");
+    const status = ref("Finished");
     const usedIn: Ref<string[]> = ref([]);
     
     const isShowUsedIn = ref(false);
