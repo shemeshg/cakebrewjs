@@ -40,6 +40,25 @@ export class BrewInfo {
     return this.getResultString( cmdObj )
   }
 
+  // eslint-disable-next-line 
+  async getCaskTrashSizeReport(localSearchItem: any, status: Ref){
+    // eslint-disable-next-line 
+    const trashAry = localSearchItem[0].artifacts.filter( (row: any)=>{return row.trash})
+
+    if (trashAry.length > 0){
+      // eslint-disable-next-line 
+      const cmd = "du -hs " + trashAry[0].trash.map( (row: any)=>{return row.replace(/(["\s'$`\\])/g,'\\$1') }).join(" ") + " 2>/dev/null |cat"
+
+      const cmdObj =  await this.runCmd(cmd, status)
+      status.value = `Finished`
+
+      return this.getResultString( cmdObj )
+    }
+    return "";
+
+
+  }
+
   private externalTerminalCmd(cmd: string){
     return `echo "${cmd};rm /tmp/tmp.sh;" > /tmp/tmp.sh ; chmod +x /tmp/tmp.sh ; open -a Terminal /tmp/tmp.sh ; `
   }

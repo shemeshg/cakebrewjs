@@ -82,6 +82,11 @@ export class PackageInfo {
         this.usedIn = this.brewLsFormulas.filter( (row)=>{ return row.dependencies.indexOf(packageName) > -1 || row.build_dependencies.indexOf(packageName) > -1}).map( (row)=>{return row.name} )
       } else {
         this.localSearchItem = this.brewCasksInfo.filter( (row)=>{ return row.token === packageName})
+
+        if (this.localSearchItem.length > 0) {
+          this.packageInfoPreTxt = this.packageInfoPreTxt + await brewInfo.getCaskTrashSizeReport(this.localSearchItem, status)          
+        }
+        
       }
 
       return;
