@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <b-form inline>
+    <b-row inline>
       <b-form-select
         id="inline-form-custom-select-pref"
         class="mb-2 mr-sm-2 mb-sm-0"
@@ -16,7 +16,7 @@
         @keydown.enter.native="getPackageInfo()"
       ></b-form-input>
       <b-button variant="primary" @click="getPackageInfo()">Info</b-button>
-    </b-form>
+    </b-row>
     <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
       {{ status }}
     </b-alert>
