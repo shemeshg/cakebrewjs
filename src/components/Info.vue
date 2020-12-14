@@ -12,6 +12,7 @@
         class="mb-2 mr-sm-2 mb-sm-0"
         placeholder="name"
         v-model="searchName"
+        autofocus
       ></b-form-input>
       <b-button variant="primary" @click="getPackageInfo()">Info</b-button>
     </b-form>

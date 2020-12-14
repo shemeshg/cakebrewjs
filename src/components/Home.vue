@@ -29,6 +29,7 @@
                     type="search"
                     id="filterCask"
                     placeholder="Type to Search"
+                    autofocus
                   ></b-form-input>
                   <b-input-group-append>
                     <b-button :disabled="!filterCask" @click="filterCask = ''"
