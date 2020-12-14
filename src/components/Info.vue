@@ -13,10 +13,11 @@
         placeholder="name"
         v-model="searchName"
         autofocus
+        @keydown.enter.native="getPackageInfo()"
       ></b-form-input>
       <b-button variant="primary" @click="getPackageInfo()">Info</b-button>
     </b-form>
-    <b-alert show variant="info" v-if="status !== 'Finished'" >
+    <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
       {{ status }}
     </b-alert>
     <pre>{{ packageInfo }}         
@@ -55,6 +56,7 @@ export default {
 
     const packageInfo = ref("");
     const status = ref("Finished");
+     const statusVariant = ref("info");
     const usedIn: Ref<string[]> = ref([]);
     
     const isShowUsedIn = ref(false);
@@ -78,6 +80,7 @@ export default {
       isShowUpgrade.value = false
       isShowInstall.value = false
       isInstalled.value = false
+      statusVariant.value = "info"
     }
 
 
@@ -88,16 +91,13 @@ export default {
 
     async function doUninstall(){
       resetForm();
-      await packageInfoObj.doUninstall(status)
-      store.commit("setBrewCasksInfo", [])
-      store.commit("setBrewLsFormulas", [])
+      await packageInfoObj.doUninstall(status)      
     }
 
     async function doInstall(){
       resetForm();
       await packageInfoObj.doInstall(status)
-      store.commit("setBrewCasksInfo", [])
-      store.commit("setBrewLsFormulas", [])      
+
     }
 
     function doPin() {
@@ -116,7 +116,10 @@ export default {
 
     async function getPackageInfo() {
       resetForm()
-
+      let s: string = searchName.value
+      s = s.trim()
+      const sary = s.split(" ")
+      searchName.value = sary[sary.length -1]
 
       if (searchName.value === "") {
         return;
@@ -126,12 +129,17 @@ export default {
       if (searchType.value === "cask") {
         packageType = PackageType.cask;
       }
-      await packageInfoObj.getPackageInfo(
-        packageType,
-        searchName.value,
-        status
-      );
 
+      try {
+        await packageInfoObj.getPackageInfo(
+          packageType,
+          searchName.value,
+          status
+        );
+      } catch (e) {
+        statusVariant.value = "danger"
+        throw e
+      }
       packageInfo.value = packageInfoObj.packageInfoPreTxt      
       usedIn.value = packageInfoObj.usedIn
 
@@ -155,7 +163,7 @@ export default {
 
     return { searchType, packageInfo, searchName, status, getPackageInfo, isShowUsedIn, usedIn, 
           isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled,
-          doPin, doUnpin, doUpgrade, doUninstall, doInstall };
+          doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant };
   },
 };
 </script>

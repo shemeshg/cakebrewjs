@@ -1,12 +1,12 @@
 <template>
   <b-container fluid>
     <p>
-      <b-button size="sm" class="mr-1" @click="getInfo" >Refresh</b-button>
+      <b-button size="sm" class="mr-1" @click="getInfo" v-bind:disabled="isGetInfoDisabled" >Refresh</b-button>
       <b-button size="sm" class="mr-1" @click="doUpgradeAll">Upgrade all ({{countUpgradable}})</b-button>
       <b-button size="sm" class="mr-1" @click="doDoctor">Doctor</b-button>
       <br />      
     </p>
-    <b-alert show variant="info" v-if="status !== 'Finished'" >
+    <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
       {{ status }}
     </b-alert>
     <div>
@@ -135,8 +135,10 @@ export default {
       return  brewCasksInfo.value.filter ( (row: any)=>{return row.outdated}).length + brewLsFormulas.value.filter ( (row: any)=>{return row.outdated}).length 
     })
 
-    const status = ref("Finished");
+    const isGetInfoDisabled = ref(false);
 
+    const status = ref("Finished");
+    const statusVariant = ref("info");
     
     const filterCask = ref("");
     const filterFormula = ref("");
@@ -172,10 +174,20 @@ export default {
 
 
     async function getInfo() {
-      const brewInfo = new BrewInfo();
-      const data = await brewInfo.getInfo(status);
-      store.commit("setBrewCasksInfo", data.brewCasksInfo)
-      store.commit("setBrewLsFormulas", data.brewLsFormulas)
+      try {
+        isGetInfoDisabled.value = true
+        statusVariant.value = "info"
+        const brewInfo = new BrewInfo();
+        const data = await brewInfo.getInfo(status);
+        store.commit("setBrewCasksInfo", data.brewCasksInfo)
+        store.commit("setBrewLsFormulas", data.brewLsFormulas)
+      } catch (e) {
+        statusVariant.value = "danger"
+      }      
+      finally {
+        isGetInfoDisabled.value = false
+      }
+
     }
 
     if (store.state.isFirstOpened) {
@@ -207,6 +219,8 @@ export default {
       doUpgradeAll,
       doDoctor,
       countUpgradable,
+      isGetInfoDisabled,
+      statusVariant,
     };
   },
 };
