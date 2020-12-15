@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <p>
+    <p  v-if="isShowNavigation">
       <b-button size="sm" class="mr-1" @click="getInfo" v-bind:disabled="isGetInfoDisabled" >Refresh</b-button>
       <b-button size="sm" class="mr-1" @click="doUpgradeAll">Upgrade all ({{countUpgradable}})</b-button>
       <b-button size="sm" class="mr-1" @click="doDoctor">Doctor</b-button>
@@ -9,8 +9,10 @@
     <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
       {{ status }}
     </b-alert>
-    <div>
-      <b-button v-b-toggle.collapse-cask class="m-1">Toggle Cask</b-button>
+    <div  v-if="isShowNavigation">
+      <a v-b-toggle.collapse-cask class="m-1" @click.prevent>
+        <b-icon icon="arrows-collapse" aria-hidden="true"></b-icon>
+        Toggle Cask</a>      
       <b-collapse visible id="collapse-cask">
         <b-card>
           <b-row>
@@ -61,8 +63,10 @@
 
 
 
-    <div>
-      <b-button v-b-toggle.collapse-formula class="m-1">Toggle Formula</b-button>
+    <div  v-if="isShowNavigation">
+      <a v-b-toggle.collapse-formula class="m-1" @click.prevent>
+        <b-icon icon="arrows-collapse" aria-hidden="true"></b-icon>
+        Toggle Formula</a>
       <b-collapse visible id="collapse-formula">
         <b-card>
           <b-row>
@@ -135,6 +139,9 @@ export default {
       return  brewCasksInfo.value.filter ( (row: any)=>{return row.outdated}).length + brewLsFormulas.value.filter ( (row: any)=>{return row.outdated}).length 
     })
 
+    // eslint-disable-next-line
+    const isShowNavigation = computed(() => store.state.isShowNavigation);
+
     const isGetInfoDisabled = ref(false);
 
     const status = ref("Finished");
@@ -175,6 +182,7 @@ export default {
 
     async function getInfo() {
       try {
+        store.commit("setIsShowNavigation", false)
         isGetInfoDisabled.value = true
         statusVariant.value = "info"
         const brewInfo = new BrewInfo();
@@ -186,13 +194,14 @@ export default {
       }      
       finally {
         isGetInfoDisabled.value = false
+        store.commit("setIsShowNavigation", true)
       }
 
     }
 
     if (store.state.isFirstOpened) {
       store.commit("setIsFirstOpened", false)
-      getInfo();
+      getInfo();      
     }
 
     // eslint-disable-next-line
@@ -221,6 +230,7 @@ export default {
       countUpgradable,
       isGetInfoDisabled,
       statusVariant,
+      isShowNavigation,
     };
   },
 };

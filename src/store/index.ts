@@ -8,6 +8,7 @@ export default new Vuex.Store({
     brewCasksInfo: [],
     brewLsFormulas: [],
     isFirstOpened: true,
+    isShowNavigation: true,
   },
   mutations: {
     setBrewCasksInfo: (state, val) => {
@@ -18,7 +19,10 @@ export default new Vuex.Store({
     },
     setIsFirstOpened: (state, val) => {
       state.isFirstOpened = val;
-    },    
+    },  
+    setIsShowNavigation: (state, val) => {
+      state.isShowNavigation = val;
+    },   
   },
   actions: {
   },
