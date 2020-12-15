@@ -131,9 +131,11 @@ export class BrewInfo {
     status.value = `Finished`
     return this.getResultString( cmdObj )
   }
-  async getInfo(status: Ref) {
-
-    await this.runCmd("/usr/local/bin/brew update", status)
+  async getInfo(status: Ref, doBrewUpdate: boolean) {
+    if (doBrewUpdate){
+      await this.runCmd("/usr/local/bin/brew update", status)
+    }  
+    
 
     const brewLsCask =  await this.runCmd("/usr/local/bin/brew ls --cask -1", status)
     

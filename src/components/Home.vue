@@ -180,13 +180,13 @@ export default {
     }
 
 
-    async function getInfo() {
+    async function getInfo(doBrewUpdate = true) {
       try {
         store.commit("setIsShowNavigation", false)
         isGetInfoDisabled.value = true
         statusVariant.value = "info"
         const brewInfo = new BrewInfo();
-        const data = await brewInfo.getInfo(status);
+        const data = await brewInfo.getInfo(status, doBrewUpdate);
         store.commit("setBrewCasksInfo", data.brewCasksInfo)
         store.commit("setBrewLsFormulas", data.brewLsFormulas)
       } catch (e) {
@@ -201,7 +201,7 @@ export default {
 
     if (store.state.isFirstOpened) {
       store.commit("setIsFirstOpened", false)
-      getInfo();      
+      getInfo(false);      
     }
 
     // eslint-disable-next-line
