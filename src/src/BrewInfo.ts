@@ -27,7 +27,7 @@ export class BrewInfo {
 
 
   private  getResultString(sc: ShellCmd){
-    return sc.result.filter((r)=>{return r.exeStatus === ExecRunStatus.SUCCESS}).map( (r)=>{return  r.str}).join(" ")
+    return sc.result.filter((r)=>{return r.exeStatus === ExecRunStatus.SUCCESS}).map( (r)=>{return  r.str}).join("")
   }
 
   async getPackageInfo(packageType: PackageType, packageName: string, status: Ref){
