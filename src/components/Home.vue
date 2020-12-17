@@ -102,7 +102,7 @@
             sort-icon-left
             responsive="sm"
             :filter="filterFormula"
-            :filter-included-fields="['name', 'description']"
+            :filter-included-fields="['name', 'desc']"
           >
             <template #cell(actions)="row">
               <span @click="infoFormula(row.item)" class="btn"> ℹ️ </span>
