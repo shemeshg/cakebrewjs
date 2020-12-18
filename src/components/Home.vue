@@ -167,9 +167,7 @@ export default {
       { key: "actions", label: " " },
     ];
 
-    async function doUpgradeAll(){
-      store.commit("setBrewCasksInfo", [])
-      store.commit("setBrewLsFormulas", [])     
+    async function doUpgradeAll(){ 
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeAll(status); 
     }
