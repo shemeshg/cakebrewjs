@@ -4,10 +4,11 @@ export class FormatData {
   // eslint-disable-next-line
   brewLsFormulas: any[]
   
-  constructor (brewCasksInfoStr: string, brewLsFormulasStr: string , brewOutdatedStr: string){
-    
-    this.brewCasksInfo = JSON.parse( brewCasksInfoStr ).casks
-    this.brewLsFormulas = JSON.parse( brewLsFormulasStr )
+  constructor ( brewLs: string , brewOutdatedStr: string){
+    const json = JSON.parse( brewLs )
+
+    this.brewCasksInfo = json.casks
+    this.brewLsFormulas = json.formulae
     const brewOutdated = JSON.parse(brewOutdatedStr)
 
     // eslint-disable-next-line 

@@ -137,16 +137,12 @@ export class BrewInfo {
     }  
     
 
-    const brewLsCask =  await this.runCmd("/usr/local/bin/brew ls --cask -1", status)
-    
-    const casksNames = this.getResultString( brewLsCask ).split("\n").filter((s) => { return s !== "" })
-    
-    const brewCasksInfo = await this.runCmd( `/usr/local/bin/brew info --cask --json=v2 ${casksNames.join(" ")}` , status)  
-    const brewLsFormulas = await this.runCmd("/usr/local/bin/brew info --json --installed", status);
+
+    const brewLs = await this.runCmd("/usr/local/bin/brew info --installed --json=v2", status);
     const brewOutdated = await this.runCmd("/usr/local/bin/brew outdated --json=v2", status);
 
     status.value = `Finished`
-    return new FormatData(this.getResultString( brewCasksInfo ), this.getResultString( brewLsFormulas ),this.getResultString( brewOutdated ) );
+    return new FormatData(this.getResultString( brewLs ),this.getResultString( brewOutdated ) );
     
 
     
