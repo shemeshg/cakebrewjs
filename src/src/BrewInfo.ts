@@ -141,7 +141,7 @@ export class BrewInfo {
     
     const casksNames = this.getResultString( brewLsCask ).split("\n").filter((s) => { return s !== "" })
     
-    const brewCasksInfo = await this.runCmd( `/usr/local/bin/brew cask info --json=v1 ${casksNames.join(" ")}` , status)  
+    const brewCasksInfo = await this.runCmd( `/usr/local/bin/brew info --cask --json=v2 ${casksNames.join(" ")}` , status)  
     const brewLsFormulas = await this.runCmd("/usr/local/bin/brew info --json --installed", status);
     const brewOutdated = await this.runCmd("/usr/local/bin/brew outdated --json=v2", status);
 

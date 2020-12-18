@@ -5,7 +5,8 @@ export class FormatData {
   brewLsFormulas: any[]
   
   constructor (brewCasksInfoStr: string, brewLsFormulasStr: string , brewOutdatedStr: string){
-    this.brewCasksInfo = JSON.parse( brewCasksInfoStr )
+    
+    this.brewCasksInfo = JSON.parse( brewCasksInfoStr ).casks
     this.brewLsFormulas = JSON.parse( brewLsFormulasStr )
     const brewOutdated = JSON.parse(brewOutdatedStr)
 
