@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+    <p>Icons made by Freepik from www.flaticon.com</p>
     <p>https://github.com/shemeshg/cakebrewjs</p>
 <h2>License</h2>
 <p>Copyright 2020 shemeshg</p>

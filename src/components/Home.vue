@@ -50,6 +50,9 @@
             responsive="sm"
             :filter="filterCask"
             :filter-included-fields="['token', 'desc']"
+
+            sortBy = 'outdatedNewVer'
+            :sortDesc = true
           >
             <template #cell(actions)="row">
               <span @click="infoCask(row.item)" class="btn"> ℹ️ </span>
@@ -103,6 +106,9 @@
             responsive="sm"
             :filter="filterFormula"
             :filter-included-fields="['name', 'desc']"
+
+            sortBy = 'outdatedNewVer'
+            :sortDesc = true
           >
             <template #cell(actions)="row">
               <span @click="infoFormula(row.item)" class="btn"> ℹ️ </span>
