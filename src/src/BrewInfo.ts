@@ -83,6 +83,26 @@ export class BrewInfo {
     return this.getResultString( cmdObj )
   }
 
+
+  async doUpgradeSelected(formulas: string[], casks: string[], status: Ref){
+    if (formulas.length === 0 && casks.length === 0){return}
+
+    const cmd: string[] = []
+    if (casks.length > 0) {
+       cmd.push ( `/usr/local/bin/brew upgrade --cask ${casks.join(" ")}` )      
+    }
+    
+    if (formulas.length > 0) {
+      cmd.push ( `/usr/local/bin/brew upgrade --formula ${formulas.join(" ")}` )
+    }
+
+    await this.runCmd(this.externalTerminalCmd(cmd.join(";")), status)
+    
+    
+    status.value = `Finished`
+  }
+
+
   async doDoctor(status: Ref){
     const cmd = `/usr/local/bin/brew doctor`
     
