@@ -13,7 +13,9 @@
       >
 
       <b-button size="sm" class="mr-1" @click="doUpgradeSelected"
-        >Upgrade selected ({{ formulaSelectedUpgrade.length + caskSelectedUpgrade.length  }})</b-button
+        >Upgrade selected ({{
+          formulaSelectedUpgrade.length + caskSelectedUpgrade.length
+        }})</b-button
       >
 
       <b-button size="sm" class="mr-1" @click="doDoctor">Doctor</b-button>
@@ -23,11 +25,15 @@
       {{ status }}
     </b-alert>
     <div v-if="isShowNavigation">
-      <a v-b-toggle.collapse-cask class="m-1" @click.prevent>
+      <a class="m-1" @click="toggleCaskVisible()">
         <b-icon icon="arrows-collapse" aria-hidden="true"></b-icon>
-        Toggle Cask</a
+        Toggle Cask ({{
+          brewCasksInfo.filter((row) => {
+            return row.outdated;
+          }).length
+        }})</a
       >
-      <b-collapse visible id="collapse-cask">
+      <b-collapse v-bind:visible="caskVisible" id="collapse-cask">
         <b-card>
           <b-row>
             <b-col lg="6" class="my-1">
@@ -85,11 +91,15 @@
     </div>
 
     <div v-if="isShowNavigation">
-      <a v-b-toggle.collapse-formula class="m-1" @click.prevent>
+      <a class="m-1" @click="toggleFormulaVisible">
         <b-icon icon="arrows-collapse" aria-hidden="true"></b-icon>
-        Toggle Formula</a
+        Toggle Formula ({{
+          brewLsFormulas.filter((row) => {
+            return row.outdated;
+          }).length
+        }})</a
       >
-      <b-collapse visible id="collapse-formula">
+      <b-collapse v-bind:visible="formulaVisible" id="collapse-formula">
         <b-card>
           <b-row>
             <b-col lg="6" class="my-1">
@@ -163,6 +173,36 @@ export default {
     // eslint-disable-next-line
     const brewLsFormulas = computed(() => store.state.brewLsFormulas);
 
+    const _caskVisible = () => {
+      const i = localStorage.getItem("caskVisible");
+      if (i === null) {
+        return false;
+      }
+      return Boolean(JSON.parse(i));
+    };
+    const caskVisible = ref(_caskVisible());
+    const toggleCaskVisible = () => {
+      const s = !caskVisible.value;
+      const b = JSON.stringify(s);
+      localStorage.setItem("caskVisible", b);
+      caskVisible.value = s;
+    };
+
+    const _formulaVisible = () => {
+      const i = localStorage.getItem("formulaVisible");
+      if (i === null) {
+        return false;
+      }
+      return Boolean(JSON.parse(i));
+    };
+    const formulaVisible = ref(_formulaVisible());
+    const toggleFormulaVisible = () => {
+      const s = !formulaVisible.value;
+      const b = JSON.stringify(s);
+      localStorage.setItem("formulaVisible", b);
+      formulaVisible.value = s;
+    };
+
     const formulaSelectedUpgrade = computed(() =>
       brewLsFormulas.value.filter((row: any) => {
         return row.selectedUpgrade;
@@ -218,14 +258,16 @@ export default {
       await brewInfo.doUpgradeAll(status);
     }
 
-
-    async function  doUpgradeSelected(){
-      const formulas = formulaSelectedUpgrade.value.map( (row: any)=>{return row.name;} )
-      const casks = caskSelectedUpgrade.value.map( (row: any)=>{return row.token;} )
+    async function doUpgradeSelected() {
+      const formulas = formulaSelectedUpgrade.value.map((row: any) => {
+        return row.name;
+      });
+      const casks = caskSelectedUpgrade.value.map((row: any) => {
+        return row.token;
+      });
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeSelected(formulas, casks, status);
     }
-
 
     async function doDoctor() {
       const brewInfo = new BrewInfo();
@@ -292,6 +334,10 @@ export default {
       formulaSelectedUpgrade,
       caskSelectedUpgrade,
       doUpgradeSelected,
+      caskVisible,
+      toggleCaskVisible,
+      formulaVisible,
+      toggleFormulaVisible,
     };
   },
 };
