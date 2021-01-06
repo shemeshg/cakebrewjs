@@ -256,6 +256,11 @@ export default {
     async function doUpgradeAll() {
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeAll(status);
+      const watch = require("electron").remote.require("fs").watch;
+      const watcher = watch("/tmp/tmp.sh", () => {
+        getInfo(false);
+        watcher.close();
+      });
     }
 
     async function doUpgradeSelected() {
@@ -267,6 +272,11 @@ export default {
       });
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeSelected(formulas, casks, status);
+      const watch = require("electron").remote.require("fs").watch;
+      const watcher = watch("/tmp/tmp.sh", () => {
+        getInfo(false);
+        watcher.close();
+      });
     }
 
     async function doDoctor() {
