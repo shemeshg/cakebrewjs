@@ -60,7 +60,7 @@ export class BrewInfo {
   }
 
   private externalTerminalCmd(cmd: string){
-    return `echo "${cmd};rm /tmp/tmp.sh;" > /tmp/tmp.sh ; chmod +x /tmp/tmp.sh ; open -a Terminal /tmp/tmp.sh ; `
+    return `echo "trap \\"rm /tmp/tmp.sh\\" EXIT;${cmd};" > /tmp/tmp.sh ; chmod +x /tmp/tmp.sh ; open -a Terminal /tmp/tmp.sh ; `
   }
 
   async doUpgrade(packageType: PackageType, packageName: string, status: Ref){
