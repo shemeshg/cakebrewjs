@@ -160,7 +160,7 @@
 </template>
 
 <script lang="ts">
-import { computed, inject, ref } from "@vue/composition-api";
+import { computed, inject, ref, Ref } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
@@ -173,34 +173,29 @@ export default {
     // eslint-disable-next-line
     const brewLsFormulas = computed(() => store.state.brewLsFormulas);
 
-    const _caskVisible = () => {
-      const i = localStorage.getItem("caskVisible");
+    const _getBoolLocalStorage = (key: string) => {
+      const i = localStorage.getItem(key);
       if (i === null) {
         return false;
       }
       return Boolean(JSON.parse(i));
-    };
-    const caskVisible = ref(_caskVisible());
-    const toggleCaskVisible = () => {
-      const s = !caskVisible.value;
-      const b = JSON.stringify(s);
-      localStorage.setItem("caskVisible", b);
-      caskVisible.value = s;
     };
 
-    const _formulaVisible = () => {
-      const i = localStorage.getItem("formulaVisible");
-      if (i === null) {
-        return false;
-      }
-      return Boolean(JSON.parse(i));
-    };
-    const formulaVisible = ref(_formulaVisible());
-    const toggleFormulaVisible = () => {
-      const s = !formulaVisible.value;
+    const _toggleBoolLocalStorage = (key: string, r: Ref<boolean>) =>{
+      const s = !r.value;
       const b = JSON.stringify(s);
-      localStorage.setItem("formulaVisible", b);
-      formulaVisible.value = s;
+      localStorage.setItem(key, b);
+      r.value = s;
+    }
+
+    const caskVisible = ref(_getBoolLocalStorage("caskVisible"));
+    const toggleCaskVisible = () => {
+      _toggleBoolLocalStorage("caskVisible", caskVisible)
+    };
+
+    const formulaVisible = ref(_getBoolLocalStorage("formulaVisible"));
+    const toggleFormulaVisible = () => {
+      _toggleBoolLocalStorage("formulaVisible", formulaVisible)
     };
 
     const formulaSelectedUpgrade = computed(() =>
@@ -256,11 +251,7 @@ export default {
     async function doUpgradeAll() {
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeAll(status);
-      const watch = require("electron").remote.require("fs").watch;
-      const watcher = watch("/tmp/tmp.sh", () => {
-        getInfo(false);
-        watcher.close();
-      });
+      getInfo(false);
     }
 
     async function doUpgradeSelected() {
@@ -272,11 +263,7 @@ export default {
       });
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeSelected(formulas, casks, status);
-      const watch = require("electron").remote.require("fs").watch;
-      const watcher = watch("/tmp/tmp.sh", () => {
-        getInfo(false);
-        watcher.close();
-      });
+      getInfo(false);
     }
 
     async function doDoctor() {

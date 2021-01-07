@@ -60,7 +60,9 @@ export class BrewInfo {
   }
 
   private externalTerminalCmd(cmd: string){
-    return `echo "trap \\"rm /tmp/tmp.sh\\" EXIT;${cmd};" > /tmp/tmp.sh ; chmod +x /tmp/tmp.sh ; open -a Terminal /tmp/tmp.sh ; `
+    const tmpFile = `/tmp/${(new Date()).getTime()}.sh`
+    const cmdStr = `echo "trap \\"rm ${tmpFile}\\" EXIT;${cmd};" > ${tmpFile} ; chmod +x ${tmpFile} ; open -a Terminal ${tmpFile} ; `
+    return {tmpFile: tmpFile, cmdStr: cmdStr}
   }
 
   async doUpgrade(packageType: PackageType, packageName: string, status: Ref){
@@ -69,16 +71,39 @@ export class BrewInfo {
       cmd = `/usr/local/bin/brew upgrade --formula ${packageName}`
     }
     
-    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    const cmdObj =  await this.runExtermalCmd(cmd, status)
     status.value = `Finished`
     return this.getResultString( cmdObj )
   }
 
 
+  private  waitForTmpFile(tmpFile: string){
+    return new Promise( (resolve, reject)=>{
+      try {
+        const watch = require("electron").remote.require("fs").watch;
+        const watcher = watch(tmpFile, () => {        
+          watcher.close();
+          resolve("");
+        });
+      } catch(e){
+        reject(e);
+      }
+
+    })
+  }
+
+   private async runExtermalCmd(cmd: string, status: Ref){
+    const ecmd = this.externalTerminalCmd(cmd)
+    const cmdObj =  await this.runCmd(ecmd.cmdStr, status);
+    await this.waitForTmpFile(ecmd.tmpFile)
+    return cmdObj;
+    
+  }
+
   async doUpgradeAll(status: Ref){
     const cmd = `/usr/local/bin/brew upgrade`
     
-    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    const cmdObj =  await this.runExtermalCmd(cmd, status)
     status.value = `Finished`
     return this.getResultString( cmdObj )
   }
@@ -96,7 +121,7 @@ export class BrewInfo {
       cmd.push ( `/usr/local/bin/brew upgrade --formula ${formulas.join(" ")}` )
     }
 
-    await this.runCmd(this.externalTerminalCmd(cmd.join(";")), status)
+    await this.runExtermalCmd(cmd.join(";"), status)
     
     
     status.value = `Finished`
@@ -106,7 +131,7 @@ export class BrewInfo {
   async doDoctor(status: Ref){
     const cmd = `/usr/local/bin/brew doctor`
     
-    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    const cmdObj =  await this.runExtermalCmd(cmd, status)
     status.value = `Finished`
     return this.getResultString( cmdObj )
   }
@@ -117,7 +142,7 @@ export class BrewInfo {
       cmd = `/usr/local/bin/brew uninstall --formula ${packageName}`
     }
     
-    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    const cmdObj =  await this.runExtermalCmd(cmd, status)
     status.value = `Finished`
     return this.getResultString( cmdObj )
   }
@@ -128,7 +153,7 @@ export class BrewInfo {
       cmd = `/usr/local/bin/brew install --formula ${packageName}`
     }
     
-    const cmdObj =  await this.runCmd(this.externalTerminalCmd(cmd), status)
+    const cmdObj =  await this.runExtermalCmd(cmd, status)
     status.value = `Finished`
     return this.getResultString( cmdObj )
   }
