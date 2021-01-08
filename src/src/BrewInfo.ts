@@ -61,7 +61,12 @@ export class BrewInfo {
 
   private externalTerminalCmd(cmd: string){
     const tmpFile = `/tmp/${(new Date()).getTime()}.sh`
-    const cmdStr = `echo "trap \\"rm ${tmpFile}\\" EXIT;${cmd};" > ${tmpFile} ; chmod +x ${tmpFile} ; open -a Terminal ${tmpFile} ; `
+
+    const writeFileSync = require("electron").remote.require("fs").writeFileSync;    
+    const str = `trap "rm ${tmpFile}" EXIT;${cmd};`    
+    writeFileSync(tmpFile, str, 'utf-8'); 
+    const cmdStr = `chmod +x ${tmpFile} ; open -a Terminal ${tmpFile} ; `
+    
     return {tmpFile: tmpFile, cmdStr: cmdStr}
   }
 
@@ -78,7 +83,7 @@ export class BrewInfo {
 
 
   private  waitForTmpFile(tmpFile: string){
-    return new Promise( (resolve, reject)=>{
+    return new Promise( (resolve)=>{
       try {
         const watch = require("electron").remote.require("fs").watch;
         const watcher = watch(tmpFile, () => {        
@@ -86,7 +91,8 @@ export class BrewInfo {
           resolve("");
         });
       } catch(e){
-        reject(e);
+        //reject(e);
+        resolve("");
       }
 
     })
@@ -94,6 +100,7 @@ export class BrewInfo {
 
    private async runExtermalCmd(cmd: string, status: Ref){
     const ecmd = this.externalTerminalCmd(cmd)
+    
     const cmdObj =  await this.runCmd(ecmd.cmdStr, status);
     await this.waitForTmpFile(ecmd.tmpFile)
     return cmdObj;
