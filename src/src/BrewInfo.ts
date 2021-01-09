@@ -86,9 +86,8 @@ export class BrewInfo {
     return new Promise( (resolve)=>{
       try {
         const watch = require("electron").remote.require("fs").watch;
-        const watcher = watch(tmpFile, () => {        
-          watcher.close();
-          resolve("");
+        const watcher = watch(tmpFile, (e: string) => {                  
+          if (e !== "change"){ watcher.close(); resolve(""); }          
         });
       } catch(e){
         //reject(e);
@@ -100,9 +99,9 @@ export class BrewInfo {
 
    private async runExtermalCmd(cmd: string, status: Ref){
     const ecmd = this.externalTerminalCmd(cmd)
-    
+    const w = this.waitForTmpFile(ecmd.tmpFile)
     const cmdObj =  await this.runCmd(ecmd.cmdStr, status);
-    await this.waitForTmpFile(ecmd.tmpFile)
+    await w;
     return cmdObj;
     
   }
