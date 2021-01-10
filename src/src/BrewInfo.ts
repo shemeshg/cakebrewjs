@@ -158,6 +158,23 @@ export class BrewInfo {
     return this.getResultString(cmdObj)
   }
 
+
+  async startService(name: string, status: Ref) {
+    const cmd = ["/usr/local/bin/brew", "services","start",name]
+
+    const cmdObj = await this.runExtermalCmd(cmd, status)
+    status.value = `Finished`
+    return this.getResultString(cmdObj)
+  }
+
+  async stopService(name: string, status: Ref) {
+    const cmd = ["/usr/local/bin/brew", "services","stop",name]
+
+    const cmdObj = await this.runExtermalCmd(cmd, status)
+    status.value = `Finished`
+    return this.getResultString(cmdObj)
+  }
+
   async doUninstall(packageType: PackageType, packageName: string, status: Ref) {
     let cmd = ["/usr/local/bin/brew", "uninstall", "--cask", packageName]
     if (packageType === PackageType.formula) {
@@ -205,9 +222,10 @@ export class BrewInfo {
 
     const brewLs = await this.runCmd(["/usr/local/bin/brew", "info", "--installed", "--json=v2"], status);
     const brewOutdated = await this.runCmd(["/usr/local/bin/brew", "outdated", "--json=v2"], status);
+    const brewSservices = await this.runCmd(["/usr/local/bin/brew", "services"], status);
 
     status.value = `Finished`
-    return new FormatData(this.getResultString(brewLs), this.getResultString(brewOutdated));
+    return new FormatData(this.getResultString(brewLs), this.getResultString(brewOutdated), this.getResultString(brewSservices));
 
   }
 }

@@ -156,6 +156,69 @@
         </b-card>
       </b-collapse>
     </div>
+    <div v-if="isShowNavigation">
+      <a class="m-1"  @click="toggleServicesVisible">
+        <b-icon icon="arrows-collapse" aria-hidden="true"></b-icon>
+        Toggle Services</a
+      >
+      <b-collapse v-bind:visible="servicesVisible" id="collapse-services">
+        <b-card>
+          <b-row>
+            <b-col lg="6" class="my-1">
+              <b-form-group
+                label="Filter"
+                label-cols-sm="3"
+                label-align-sm="left"
+                label-size="sm"
+                label-for="filterServices"
+                class="mb-0"
+              >
+                <b-input-group size="sm">
+                  <b-form-input
+                    v-model="filterServices"
+                    type="search"
+                    id="filterServices"
+                    placeholder="Type to Search"
+                  ></b-form-input>
+                  <b-input-group-append>
+                    <b-button
+                      :disabled="!filterServices"
+                      @click="filterServices = ''"
+                      >Clear</b-button
+                    >
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+            </b-col>
+          </b-row>
+
+          <b-table
+            :items="brewServices"
+            :fields="brewServicesFields"
+            sort-icon-left
+            responsive="sm"
+            :filter="filterFormula"
+            :sortDesc="true"
+          >
+
+
+            <template #cell(actions)="row">
+              
+              <a class="m-1" 
+              v-if="row.item.status === 'stopped'"
+              @click="startService(row.item.name)" >
+                 Start {{row.item.name}}
+              </a>
+              <a class="m-1" 
+              v-if="row.item.status !== 'stopped'"
+              @click="stopService(row.item.name)"> 
+                 Stop {{row.item.name}}
+              </a>              
+            </template>
+          </b-table>
+        </b-card>
+      </b-collapse>
+    </div>
   </b-container>
 </template>
 
@@ -172,6 +235,8 @@ export default {
     const brewCasksInfo = computed(() => store.state.brewCasksInfo);
     // eslint-disable-next-line
     const brewLsFormulas = computed(() => store.state.brewLsFormulas);
+    // eslint-disable-next-line
+    const brewServices = computed(() => store.state.brewServices);
 
     const _getBoolLocalStorage = (key: string) => {
       const i = localStorage.getItem(key);
@@ -196,6 +261,12 @@ export default {
     const formulaVisible = ref(_getBoolLocalStorage("formulaVisible"));
     const toggleFormulaVisible = () => {
       _toggleBoolLocalStorage("formulaVisible", formulaVisible)
+    };
+
+
+    const servicesVisible = ref(_getBoolLocalStorage("servicesVisible"));
+    const toggleServicesVisible = () => {
+      _toggleBoolLocalStorage("servicesVisible", servicesVisible)
     };
 
     const formulaSelectedUpgrade = computed(() =>
@@ -231,6 +302,7 @@ export default {
 
     const filterCask = ref("");
     const filterFormula = ref("");
+    const filterServices = ref("");
 
     const brewCasksFields = [
       { key: "token", sortable: true },
@@ -245,6 +317,14 @@ export default {
       { key: "desc", sortable: true },
       { key: "ver", label: "Version", sortable: true },
       { key: "outdatedNewVer", label: "Outdated", sortable: true },
+      { key: "actions", label: " " },
+    ];
+
+    const brewServicesFields = [
+      { key: "name", sortable: true },
+      { key: "status", sortable: true },
+      { key: "user", sortable: true },
+      { key: "plist", sortable: true },
       { key: "actions", label: " " },
     ];
 
@@ -271,6 +351,18 @@ export default {
       await brewInfo.doDoctor(status);
     }
 
+    async function startService(name: string){
+      const brewInfo = new BrewInfo();
+      await brewInfo.startService(name, status);
+      getInfo(false);
+    }
+
+    async function stopService(name: string){
+      const brewInfo = new BrewInfo();
+      await brewInfo.stopService(name, status);
+      getInfo(false);
+    }
+
     async function getInfo(doBrewUpdate = true) {
       try {
         store.commit("setIsShowNavigation", false);
@@ -280,6 +372,8 @@ export default {
         const data = await brewInfo.getInfo(status, doBrewUpdate);
         store.commit("setBrewCasksInfo", data.brewCasksInfo);
         store.commit("setBrewLsFormulas", data.brewLsFormulas);
+        store.commit("setBrewServices", data.brewServices);
+
       } catch (e) {
         statusVariant.value = "danger";
       } finally {
@@ -317,9 +411,11 @@ export default {
       brewCasksInfo,
       brewLsFormulas,
       brewCasksFields,
+      brewServices,
       infoCask,
       filterCask,
       filterFormula,
+      filterServices,
       infoFormula,
       brewFormulasFields,
       doUpgradeAll,
@@ -335,6 +431,11 @@ export default {
       toggleCaskVisible,
       formulaVisible,
       toggleFormulaVisible,
+      servicesVisible,
+      toggleServicesVisible,
+      brewServicesFields,
+      startService,
+      stopService,
     };
   },
 };

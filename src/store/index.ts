@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     brewCasksInfo: [],
     brewLsFormulas: [],
+    brewServices: [],
     isFirstOpened: true,
     isShowNavigation: true,
   },
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     },
     setBrewLsFormulas: (state, val) => {
       state.brewLsFormulas = val;
+    },
+    setBrewServices: (state, val) => {
+      state.brewServices = val;
     },
     setIsFirstOpened: (state, val) => {
       state.isFirstOpened = val;

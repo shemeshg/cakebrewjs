@@ -1,10 +1,40 @@
+interface BrewServicesI {
+  name: string;
+  status: string;
+  user: string;
+  plist: string;
+}
+
 export class FormatData {
   // eslint-disable-next-line
   brewCasksInfo: any[];
   // eslint-disable-next-line
-  brewLsFormulas: any[]
+  brewLsFormulas: any[];
+
+  brewServices: BrewServicesI[]
   
-  constructor ( brewLs: string , brewOutdatedStr: string){
+  private parseBreServices( s: string){
+    const lines = s.split("\n")
+    const h = lines[0]
+    const ret: BrewServicesI[] = []
+    lines.slice(1).forEach( (l)=>{
+      const name = l.substring(0, h.search("Status")).trim()
+      if (name) {
+        ret.push({
+          name: name,
+          status: l.substring(h.search("Status"), h.search("User")).trim(),
+          user: l.substring(h.search("User"), h.search("Plist")).trim(),
+          plist: l.substring(h.search("Plist")).trim(),
+        })
+      }
+
+    })
+    return ret
+  }
+
+  constructor ( brewLs: string , brewOutdatedStr: string, brewServices: string){
+    this.brewServices = this.parseBreServices( brewServices )
+    
     const json = JSON.parse( brewLs )
 
     this.brewCasksInfo = json.casks
