@@ -40,6 +40,11 @@ export class BrewInfo {
     return this.getResultString( cmdObj )
   }
 
+  private escapeCmdParam(s: string){
+    return s.replace(/(["\s'$`\\])/g,'\\$1') 
+  }
+
+
   // eslint-disable-next-line 
   async getCaskTrashSizeReport(localSearchItem: any, status: Ref){
     // eslint-disable-next-line 
@@ -47,7 +52,7 @@ export class BrewInfo {
 
     if (trashAry.length > 0){
       // eslint-disable-next-line 
-      const cmd = "du -hs " + trashAry[0].trash.map( (row: any)=>{return row.replace(/(["\s'$`\\])/g,'\\$1') }).join(" ") + " 2>/dev/null |cat"
+      const cmd = "du -hs " + trashAry[0].trash.map( (row: any)=>{return this.escapeCmdParam(row) }).join(" ") + " 2>/dev/null |cat"
 
       const cmdObj =  await this.runCmd(cmd, status)
       status.value = `Finished`
