@@ -197,7 +197,7 @@
             :fields="brewServicesFields"
             sort-icon-left
             responsive="sm"
-            :filter="filterFormula"
+            :filter="filterServices"
             :sortDesc="true"
           >
 
