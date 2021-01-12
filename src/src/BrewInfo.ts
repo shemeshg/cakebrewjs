@@ -63,7 +63,8 @@ export class BrewInfo {
 
     if (trashAry.length > 0) {
       // eslint-disable-next-line 
-      const cmd = ["du", "-hs"].concat(trashAry[0].trash).concat("2>/dev/null|cat")
+      let cmd = ["du", "-hs"].concat(trashAry[0].trash)
+      cmd = cmd.concat("2>/dev/null|cat")
       const cmdObj = await this.runCmd(cmd, status)
       status.value = `Finished`
 
@@ -133,14 +134,16 @@ export class BrewInfo {
   async doUpgradeSelected(formulas: string[], casks: string[], status: Ref) {
     if (formulas.length === 0 && casks.length === 0) { return }
 
-    const cmd: string[] = []
+    let cmd: string[] = []
     if (casks.length > 0) {
-      cmd.concat(["/usr/local/bin/brew", "upgrade", "--cask"]).concat(casks)
-      if (formulas.length > 0) cmd.concat(";")
+      cmd = cmd.concat(["/usr/local/bin/brew", "upgrade", "--cask"])
+      cmd = cmd.concat(casks)
+      if (formulas.length > 0) cmd = cmd.concat(";")
     }
 
     if (formulas.length > 0) {
-      cmd.concat(["/usr/local/bin/brew", "upgrade", "--formula"]).concat(formulas)
+      cmd = cmd.concat(["/usr/local/bin/brew", "upgrade", "--formula"])
+      cmd = cmd.concat(formulas)
     }
 
     await this.runExtermalCmd(cmd, status)
