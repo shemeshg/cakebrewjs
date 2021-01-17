@@ -1,49 +1,15 @@
-import { ShellCmd, ExecRunStatus } from "./ShellCmd";
+import {ShellCmdUi} from "./ShellCmdUi"
 import { FormatData } from "./FormatData"
 import { Ref } from '@vue/composition-api'
+
 
 export enum PackageType {
   cask,
   formula
 }
 
-export class BrewInfo {
+export class BrewInfo extends ShellCmdUi{
 
-  private async runCmd(str: string[][], status: Ref, noEscapedString = "") {
-
-    let shellCmd: ShellCmd;
-    if (noEscapedString) {
-      shellCmd = new ShellCmd(noEscapedString)
-    } else {
-      shellCmd = new ShellCmd(this.getEscapedCmd(str));
-    }
-
-    
-    status.value = `Running: ${shellCmd.cmd}`
-    try {
-      await shellCmd.doCmd();
-      if (shellCmd.execRunStatus !== ExecRunStatus.SUCCESS) {
-        status.value = `Failed  ${shellCmd.cmd}: ${shellCmd.result[shellCmd.result.length - 1].str}`;
-        throw new Error(status.value)
-      }
-      return shellCmd;
-    } catch (e) {
-      status.value = e.message
-      throw e
-    }
-  }
-
-  private getEscapedCmd(strRows: string[][]) {
-    const row: string[] = []
-    strRows.forEach( str =>{
-      row.push( str.reduce((p, c) => { return p + ` ${this.escapeCmdParam(c)} ` }) )
-    })
-    return row.join(";")
-  }
-
-  private getResultString(sc: ShellCmd) {
-    return sc.result.filter((r) => { return r.exeStatus === ExecRunStatus.SUCCESS }).map((r) => { return r.str }).join("")
-  }
 
   async getPackageInfo(packageType: PackageType, packageName: string, status: Ref) {
     let cmd = ["/usr/local/bin/brew", "info", "--cask", packageName]
@@ -54,11 +20,6 @@ export class BrewInfo {
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
-
-  private escapeCmdParam(s: string) {
-    return s.replace(/([";\s'$`\\])/g, '\\$1')
-  }
-
 
   // eslint-disable-next-line 
   async getCaskTrashSizeReport(localSearchItem: any, status: Ref) {
@@ -75,20 +36,9 @@ export class BrewInfo {
       return this.getResultString(cmdObj)
     }
     return "";
-
-
   }
 
-  private externalTerminalCmd(cmd: string[][]) {
-    const tmpFile = `/tmp/${(new Date()).getTime()}.sh`
 
-    const writeFileSync = require("electron").remote.require("fs").writeFileSync;
-    const str = `trap "rm ${tmpFile}" EXIT;${this.getEscapedCmd(cmd)};`
-    writeFileSync(tmpFile, str, 'utf-8');
-    const cmdStr = `chmod +x ${tmpFile} ; open -a Terminal ${tmpFile} ; `
-
-    return { tmpFile: tmpFile, cmdStr: cmdStr }
-  }
 
   async doUpgrade(packageType: PackageType, packageName: string, status: Ref) {
     let cmd = ["/usr/local/bin/brew", "upgrade", "--cask", packageName]
@@ -101,30 +51,6 @@ export class BrewInfo {
     return this.getResultString(cmdObj)
   }
 
-
-  private waitForTmpFile(tmpFile: string) {
-    return new Promise((resolve) => {
-      try {
-        const watch = require("electron").remote.require("fs").watch;
-        const watcher = watch(tmpFile, (e: string) => {
-          if (e !== "change") { watcher.close(); resolve(""); }
-        });
-      } catch (e) {
-        //reject(e);
-        resolve("");
-      }
-
-    })
-  }
-
-  private async runExtermalCmd(cmd: string[][], status: Ref) {
-    const ecmd = this.externalTerminalCmd(cmd)
-    const w = this.waitForTmpFile(ecmd.tmpFile)
-    const cmdObj = await this.runCmd([], status, ecmd.cmdStr);
-    await w;
-    return cmdObj;
-
-  }
 
   async doUpgradeAll(status: Ref) {
     const cmd = ["/usr/local/bin/brew", "upgrade"]
