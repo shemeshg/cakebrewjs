@@ -9,7 +9,7 @@ export enum PackageType {
 
 export class BrewInfo {
 
-  private async runCmd(str: string[], status: Ref, noEscapedString = "") {
+  private async runCmd(str: string[][], status: Ref, noEscapedString = "") {
 
     let shellCmd: ShellCmd;
     if (noEscapedString) {
@@ -33,8 +33,12 @@ export class BrewInfo {
     }
   }
 
-  private getEscapedCmd(str: string[]) {
-    return str.reduce((p, c) => { return p + ` ${this.escapeCmdParam(c)} ` })
+  private getEscapedCmd(strRows: string[][]) {
+    const row: string[] = []
+    strRows.forEach( str =>{
+      row.push( str.reduce((p, c) => { return p + ` ${this.escapeCmdParam(c)} ` }) )
+    })
+    return row.join(";")
   }
 
   private getResultString(sc: ShellCmd) {
@@ -46,13 +50,13 @@ export class BrewInfo {
     if (packageType === PackageType.formula) {
       cmd = ["/usr/local/bin/brew", "info", "--formula", packageName]
     }
-    const cmdObj = await this.runCmd(cmd, status)
+    const cmdObj = await this.runCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
 
   private escapeCmdParam(s: string) {
-    return s.replace(/(["\s'$`\\])/g, '\\$1')
+    return s.replace(/([";\s'$`\\])/g, '\\$1')
   }
 
 
@@ -65,7 +69,7 @@ export class BrewInfo {
       // eslint-disable-next-line 
       let cmd = ["du", "-hs"].concat(trashAry[0].trash)
       cmd = cmd.concat("2>/dev/null|cat")
-      const cmdObj = await this.runCmd(cmd, status)
+      const cmdObj = await this.runCmd([cmd], status)
       status.value = `Finished`
 
       return this.getResultString(cmdObj)
@@ -75,7 +79,7 @@ export class BrewInfo {
 
   }
 
-  private externalTerminalCmd(cmd: string[]) {
+  private externalTerminalCmd(cmd: string[][]) {
     const tmpFile = `/tmp/${(new Date()).getTime()}.sh`
 
     const writeFileSync = require("electron").remote.require("fs").writeFileSync;
@@ -92,7 +96,7 @@ export class BrewInfo {
       cmd = ["/usr/local/bin/brew", "upgrade", "--formula", packageName]
     }
 
-    const cmdObj = await this.runExtermalCmd(cmd, status)
+    const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -113,7 +117,7 @@ export class BrewInfo {
     })
   }
 
-  private async runExtermalCmd(cmd: string[], status: Ref) {
+  private async runExtermalCmd(cmd: string[][], status: Ref) {
     const ecmd = this.externalTerminalCmd(cmd)
     const w = this.waitForTmpFile(ecmd.tmpFile)
     const cmdObj = await this.runCmd([], status, ecmd.cmdStr);
@@ -125,7 +129,7 @@ export class BrewInfo {
   async doUpgradeAll(status: Ref) {
     const cmd = ["/usr/local/bin/brew", "upgrade"]
 
-    const cmdObj = await this.runExtermalCmd(cmd, status)
+    const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -134,16 +138,19 @@ export class BrewInfo {
   async doUpgradeSelected(formulas: string[], casks: string[], status: Ref) {
     if (formulas.length === 0 && casks.length === 0) { return }
 
-    let cmd: string[] = []
+    const cmd: string[][] = []
     if (casks.length > 0) {
-      cmd = cmd.concat(["/usr/local/bin/brew", "upgrade", "--cask"])
-      cmd = cmd.concat(casks)
-      if (formulas.length > 0) cmd = cmd.concat(";")
+      let c: string[] = []
+      c = c.concat(["/usr/local/bin/brew", "upgrade", "--cask"])
+      c = c.concat(casks)
+      cmd.push(c)
     }
 
     if (formulas.length > 0) {
-      cmd = cmd.concat(["/usr/local/bin/brew", "upgrade", "--formula"])
-      cmd = cmd.concat(formulas)
+      let c: string[] = []
+      c = c.concat(["/usr/local/bin/brew", "upgrade", "--formula"])
+      c = c.concat(formulas)
+      cmd.push(c)
     }
 
     await this.runExtermalCmd(cmd, status)
@@ -156,7 +163,7 @@ export class BrewInfo {
   async doDoctor(status: Ref) {
     const cmd = ["/usr/local/bin/brew", "doctor"]
 
-    const cmdObj = await this.runExtermalCmd(cmd, status)
+    const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -165,7 +172,7 @@ export class BrewInfo {
   async startService(name: string, status: Ref) {
     const cmd = ["/usr/local/bin/brew", "services","start",name]
 
-    const cmdObj = await this.runExtermalCmd(cmd, status)
+    const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -173,7 +180,7 @@ export class BrewInfo {
   async stopService(name: string, status: Ref) {
     const cmd = ["/usr/local/bin/brew", "services","stop",name]
 
-    const cmdObj = await this.runExtermalCmd(cmd, status)
+    const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -184,7 +191,7 @@ export class BrewInfo {
       cmd = ["/usr/local/bin/brew", "uninstall", "--formula", packageName]
     }
 
-    const cmdObj = await this.runExtermalCmd(cmd, status)
+    const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -195,7 +202,7 @@ export class BrewInfo {
       cmd = ["/usr/local/bin/brew", "install", "--formula", packageName]
     }
 
-    const cmdObj = await this.runExtermalCmd(cmd, status)
+    const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -204,7 +211,7 @@ export class BrewInfo {
   async doPin(packageName: string, status: Ref) {
     const cmd = ["/usr/local/bin/brew", "pin", packageName]
 
-    const cmdObj = await this.runCmd(cmd, status)
+    const cmdObj = await this.runCmd([cmd], status)
 
     status.value = `Finished`
     return this.getResultString(cmdObj)
@@ -213,19 +220,19 @@ export class BrewInfo {
   async doUnpin(packageName: string, status: Ref) {
     const cmd = ["/usr/local/bin/brew", "unpin", packageName]
 
-    const cmdObj = await this.runCmd(cmd, status)
+    const cmdObj = await this.runCmd([cmd], status)
 
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
   async getInfo(status: Ref, doBrewUpdate: boolean) {
     if (doBrewUpdate) {
-      await this.runCmd(["/usr/local/bin/brew", "update"], status)
+      await this.runCmd([["/usr/local/bin/brew", "update"]], status)
     }
 
-    const brewLs = await this.runCmd(["/usr/local/bin/brew", "info", "--installed", "--json=v2"], status);
-    const brewOutdated = await this.runCmd(["/usr/local/bin/brew", "outdated", "--json=v2"], status);
-    const brewSservices = await this.runCmd(["/usr/local/bin/brew", "services"], status);
+    const brewLs = await this.runCmd([["/usr/local/bin/brew", "info", "--installed", "--json=v2"]], status);
+    const brewOutdated = await this.runCmd([["/usr/local/bin/brew", "outdated", "--json=v2"]], status);
+    const brewSservices = await this.runCmd([["/usr/local/bin/brew", "services"]], status);
 
     status.value = `Finished`
     return new FormatData(this.getResultString(brewLs), this.getResultString(brewOutdated), this.getResultString(brewSservices));
