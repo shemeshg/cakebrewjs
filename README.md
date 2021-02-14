@@ -2,38 +2,38 @@
 
 Homebrew GUI App written in electron
 
-https://github.com/shemeshg/cakebrewjs
+<https://github.com/shemeshg/cakebrewjs>
 
-https://sourceforge.net/p/cakebrewjs
+<https://sourceforge.net/p/cakebrewjs>
 
 ## Install
 
-```
-brew cask install shemeshg/tap/cakebrewjs
+```bash
+brew install --cask cakebrewjs
 ```
 
 ## Uninstall
 
-```
+```bash
 brew cask uninstall cakebrewjs
 brew untap shemeshg/tap
 ```
 
 ## Project setup
 
-```
+```bash
 npm install
 ```
 
 ### Compiles and hot-reloads for development
 
-```
+```bash
 npm run electron:serve
 ```
 
 ### Compiles and minifies for production
 
-```
+```bash
 npm run electron:build
 ```
 
