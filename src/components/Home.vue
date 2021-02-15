@@ -22,7 +22,7 @@
       <br />
     </p>
     <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'">
-      {{ status }}
+      <div  v-html="status"> </div>   
     </b-alert>
     <div v-if="isShowNavigation">
       <a class="m-1" @click="toggleCaskVisible()">

@@ -18,7 +18,7 @@
       <b-button variant="primary" @click="getPackageInfo()">Info</b-button>
     </b-form>
     <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
-      {{ status }}
+        <div  v-html="status"> </div>
     </b-alert>
     <pre>{{ packageInfo }}         
 <span v-if="isShowUsedIn"> Used in: {{usedIn}}</span>       
