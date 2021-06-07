@@ -297,8 +297,13 @@ export default {
 
     const isGetInfoDisabled = ref(false);
 
-    const status = ref("Finished");
-    const statusVariant = ref("info");
+    // eslint-disable-next-line
+    const status = computed({get: () => store.state.statusHome, set: (val)=>{
+      store.commit("setStatusHome", val);
+    }});
+    const statusVariant = computed({get: () => store.state.statusVariantHome, set: (val)=>{
+      store.commit("setStatusVariantHome", val);
+    }});
 
     const filterCask = ref("");
     const filterFormula = ref("");

@@ -10,6 +10,10 @@ export default new Vuex.Store({
     brewServices: [],
     isFirstOpened: true,
     isShowNavigation: true,
+    statusHome: "Finished",
+    statusVariantHome: "info",
+    statusInfo: "Finished",
+    statusVariantInfo: "info",
   },
   mutations: {
     setBrewCasksInfo: (state, val) => {
@@ -27,6 +31,18 @@ export default new Vuex.Store({
     setIsShowNavigation: (state, val) => {
       state.isShowNavigation = val;
     },   
+    setStatusHome: (state, val) => {
+      state.statusHome = val;
+    },
+    setStatusVariantHome: (state, val) => {
+      state.statusVariantHome = val;
+    },  
+    setStatusInfo: (state, val) => {
+      state.statusInfo = val;
+    },
+    setStatusVariantInfo: (state, val) => {
+      state.statusVariantInfo = val;
+    },       
   },
   actions: {
   },

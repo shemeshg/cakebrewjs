@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <b-form @submit.stop.prevent inline>
+    <b-form @submit.stop.prevent inline >
       <b-form-select
         id="inline-form-custom-select-pref"
         class="mb-2 mr-sm-2 mb-sm-0"
@@ -55,8 +55,15 @@ export default {
     
 
     const packageInfo = ref("");
-    const status = ref("Finished");
-     const statusVariant = ref("info");
+    
+    // eslint-disable-next-line
+    const status = computed({get: () => store.state.statusInfo, set: (val)=>{
+      store.commit("setStatusInfo", val);
+    }});
+    const statusVariant = computed({get: () => store.state.statusVariantInfo, set: (val)=>{
+      store.commit("setStatusVariantInfo", val);
+    }});
+    
     const usedIn: Ref<string[]> = ref([]);
     
     const isShowUsedIn = ref(false);
@@ -80,7 +87,7 @@ export default {
       isShowUpgrade.value = false
       isShowInstall.value = false
       isInstalled.value = false
-      statusVariant.value = "info"
+      statusVariant.value = "info";
     }
 
 
@@ -137,7 +144,7 @@ export default {
           status
         );
       } catch (e) {
-        statusVariant.value = "danger"
+        statusVariant.value = "danger";
         throw e
       }
       packageInfo.value = packageInfoObj.packageInfoPreTxt      
