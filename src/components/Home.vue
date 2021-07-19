@@ -1,4 +1,4 @@
-<template>
+<template> 
   <b-container fluid>
     <p v-if="isShowNavigation">
       <b-button
@@ -145,7 +145,7 @@
                 v-if="row.item.outdatedNewVer"
                 v-model="row.item.selectedUpgrade"
               >
-                {{ row.item.outdatedNewVer }} {{row.item.isLeaf}}
+                {{ row.item.outdatedNewVer }}
               </b-form-checkbox>
             </template>
 
