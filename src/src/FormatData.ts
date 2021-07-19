@@ -68,13 +68,14 @@ export class FormatData {
     });
 
     this.brewLsFormulas.forEach(row => {
+      const packageName = row.name
+      row.usedIn = this.brewLsFormulas.filter( (row)=>{ return row.dependencies.indexOf(packageName) > -1 || row.build_dependencies.indexOf(packageName) > -1}).map( (row)=>{return row.name} )
+      row.isLeaf = row.usedIn.length === 0
       row.ver = row.installed[0].version
       if (row.pinned) {
         row.ver = "📌 " + row.ver
       }
     });
-
-
 
 
   }

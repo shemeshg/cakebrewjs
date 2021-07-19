@@ -145,8 +145,14 @@
                 v-if="row.item.outdatedNewVer"
                 v-model="row.item.selectedUpgrade"
               >
-                {{ row.item.outdatedNewVer }}
+                {{ row.item.outdatedNewVer }} {{row.item.isLeaf}}
               </b-form-checkbox>
+            </template>
+
+            <template #cell(isLeaf)="row">
+              <div class="mt-1"
+                v-if="row.item.isLeaf"
+              >🍃</div>
             </template>
 
             <template #cell(actions)="row">
@@ -317,11 +323,12 @@ export default {
       { key: "actions", label: " " },
     ];
 
-    const brewFormulasFields = [
+    const brewFormulasFields = [      
       { key: "name", sortable: true },
       { key: "desc", sortable: true },
       { key: "ver", label: "Version", sortable: true },
       { key: "outdatedNewVer", label: "Outdated", sortable: true },
+      { key: "isLeaf", sortable: true, label: "Leaf" },
       { key: "actions", label: " " },
     ];
 
