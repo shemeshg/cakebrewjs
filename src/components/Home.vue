@@ -149,10 +149,14 @@
               </b-form-checkbox>
             </template>
 
-            <template #cell(isLeaf)="row">
+            <template #cell(isLeaf)="row" >
+              
               <div class="mt-1"
-                v-if="row.item.isLeaf"
+                v-if="row.item.isLeaf" 
               >🍃</div>
+              <div v-if="!row.item.isLeaf" v-b-popover.hover.top='row.item.usedIn.join(" ")' title="Used in"> 
+                .
+              </div>
             </template>
 
             <template #cell(actions)="row">
