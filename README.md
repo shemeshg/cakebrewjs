@@ -16,7 +16,6 @@ brew install --cask cakebrewjs
 
 ```bash
 brew cask uninstall cakebrewjs
-brew untap shemeshg/tap
 ```
 
 ## Project setup
