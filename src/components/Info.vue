@@ -39,6 +39,7 @@
 import { ref, Ref, computed, inject } from "@vue/composition-api";
 import { PackageType } from "../src/BrewInfo";
 import { PackageInfo } from "../src/PackageInfo";
+import { BrewInfo } from "../src/BrewInfo";
 
 export default {
   /* eslint-disable */
@@ -91,19 +92,25 @@ export default {
     }
 
 
-    function doUpgrade(){
+    async function doUpgrade(){
       resetForm();
-      return packageInfoObj.doUpgrade(status)
+      await packageInfoObj.doUpgrade(status)
+      const brewInfo = new BrewInfo();
+      await brewInfo.getInfoToStore(status, false, store);
     }
 
     async function doUninstall(){
       resetForm();
-      await packageInfoObj.doUninstall(status)      
+      await packageInfoObj.doUninstall(status)   
+      const brewInfo = new BrewInfo();
+      await brewInfo.getInfoToStore(status, false, store);         
     }
 
     async function doInstall(){
       resetForm();
       await packageInfoObj.doInstall(status)
+      const brewInfo = new BrewInfo();
+      await brewInfo.getInfoToStore(status, false, store);
 
     }
 

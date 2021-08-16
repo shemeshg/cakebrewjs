@@ -151,7 +151,8 @@ export class BrewInfo extends ShellCmdUi{
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
-  async getInfo(status: Ref, doBrewUpdate: boolean) {
+
+  private async getInfo(status: Ref, doBrewUpdate: boolean) {
     if (doBrewUpdate) {
       await this.runCmd([["/usr/local/bin/brew", "update"]], status)
     }
@@ -164,4 +165,12 @@ export class BrewInfo extends ShellCmdUi{
     return new FormatData(this.getResultString(brewLs), this.getResultString(brewOutdated), this.getResultString(brewSservices));
 
   }
+
+  //eslint-disable-next-line 
+  async getInfoToStore(status: Ref, doBrewUpdate: boolean, store: any){
+    const data = await this.getInfo(status, doBrewUpdate);
+    store.commit("setBrewCasksInfo", data.brewCasksInfo);
+    store.commit("setBrewLsFormulas", data.brewLsFormulas);
+    store.commit("setBrewServices", data.brewServices);
+  } 
 }

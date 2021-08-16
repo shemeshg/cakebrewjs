@@ -385,10 +385,7 @@ export default {
         isGetInfoDisabled.value = true;
         statusVariant.value = "info";
         const brewInfo = new BrewInfo();
-        const data = await brewInfo.getInfo(status, doBrewUpdate);
-        store.commit("setBrewCasksInfo", data.brewCasksInfo);
-        store.commit("setBrewLsFormulas", data.brewLsFormulas);
-        store.commit("setBrewServices", data.brewServices);
+        await brewInfo.getInfoToStore(status, doBrewUpdate, store);
 
       } catch (e) {
         statusVariant.value = "danger";
