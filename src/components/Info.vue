@@ -29,6 +29,7 @@
       <b-button size="sm" class="mr-1"  v-if="isShowUpgrade" @click="doUpgrade">Upgrade</b-button>
       <b-button size="sm" class="mr-1"  v-if="isShowInstall" @click="doInstall">Install</b-button>
       <b-button size="sm" class="mr-1"  v-if="isInstalled" @click="doUninstall">Uninstall</b-button>
+      <b-button size="sm" class="mr-1"  v-if="isInstalledZap" @click="doUninstall(true)">Uninstall zap</b-button>
 </p>      
 
 
@@ -73,7 +74,7 @@ export default {
     const isShowUpgrade = ref(false);
     const isShowInstall = ref(false);
     const isInstalled = ref(false);
-
+    const isInstalledZap = ref(false);
 
 
     let packageInfoObj: PackageInfo;
@@ -88,6 +89,7 @@ export default {
       isShowUpgrade.value = false
       isShowInstall.value = false
       isInstalled.value = false
+      isInstalledZap.value = false
       statusVariant.value = "info";
     }
 
@@ -99,9 +101,9 @@ export default {
       await brewInfo.getInfoToStore(status, false, store);
     }
 
-    async function doUninstall(){
+    async function doUninstall(zap = false){
       resetForm();
-      await packageInfoObj.doUninstall(status)   
+      await packageInfoObj.doUninstall(status, zap)   
       const brewInfo = new BrewInfo();
       await brewInfo.getInfoToStore(status, false, store);         
     }
@@ -163,7 +165,7 @@ export default {
       isShowUpgrade.value = packageInfoObj.isShowUpgrade
       isShowInstall.value = packageInfoObj.isShowInstall
       isInstalled.value = packageInfoObj.isInstalled
-      
+      isInstalledZap.value = packageInfoObj.isInstalledZap
 
     }
 
@@ -176,7 +178,7 @@ export default {
     }
 
     return { searchType, packageInfo, searchName, status, getPackageInfo, isShowUsedIn, usedIn, 
-          isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled,
+          isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled,isInstalledZap,
           doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant };
   },
 };

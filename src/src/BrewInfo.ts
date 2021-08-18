@@ -111,12 +111,17 @@ export class BrewInfo extends ShellCmdUi{
     return this.getResultString(cmdObj)
   }
 
-  async doUninstall(packageType: PackageType, packageName: string, status: Ref) {
-    let cmd = ["/usr/local/bin/brew", "uninstall", "--cask", packageName]
+  async doUninstall(packageType: PackageType, packageName: string, status: Ref, zap=false) {
+    let cmd = ["/usr/local/bin/brew", "uninstall", "--cask"]
     if (packageType === PackageType.formula) {
-      cmd = ["/usr/local/bin/brew", "uninstall", "--formula", packageName]
+      cmd = ["/usr/local/bin/brew", "uninstall", "--formula"]
+    } 
+
+    if (packageType === PackageType.cask && zap) {
+      cmd.push("--zap")
     }
 
+    cmd.push(packageName)
     const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)

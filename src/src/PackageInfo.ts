@@ -48,12 +48,13 @@ export class PackageInfo {
       );
     }
 
-    async doUninstall(status: Ref){
+    async doUninstall(status: Ref, zap=false){
       const brewInfo = new BrewInfo();
       await brewInfo.doUninstall(
         this.packageType,
         this.packageName,
-        status
+        status,
+        zap
       );
     }
 
@@ -110,7 +111,9 @@ export class PackageInfo {
     }
 
     get isShowUpgrade(){
-      return this.isInstalled && this.localSearchItem[0].outdated && !this.isShowUnpin
+      return this.isInstalled && 
+        (this.localSearchItem[0].outdated || (!this.isFormuls && this.localSearchItem[0].auto_updates)) && 
+        !this.isShowUnpin
     }
 
     get isShowPin(){
@@ -124,4 +127,9 @@ export class PackageInfo {
     get isInstalled(){
       return this.localSearchItem.length > 0
     }
+
+    get isInstalledZap(){
+      return this.localSearchItem.length > 0 && !this.isFormuls
+    }    
+    
 }
