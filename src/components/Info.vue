@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <b-form @submit.stop.prevent inline >
+    <b-form @submit.stop.prevent inline v-if="isShowNavigation">
       <b-form-select
         id="inline-form-custom-select-pref"
         class="mb-2 mr-sm-2 mb-sm-0"
@@ -52,6 +52,9 @@ export default {
     // eslint-disable-next-line
     const brewLsFormulas = computed(() => store.state.brewLsFormulas);
 
+    // eslint-disable-next-line
+    const isShowNavigation = computed(() => store.state.isShowNavigation);
+
     const searchType = ref("cask");
     const searchName = ref("");
     
@@ -96,24 +99,29 @@ export default {
 
     async function doUpgrade(){
       resetForm();
-      await packageInfoObj.doUpgrade(status)
+      store.commit("setIsShowNavigation", false);
+      await packageInfoObj.doUpgrade(status)      
       const brewInfo = new BrewInfo();
       await brewInfo.getInfoToStore(status, false, store);
+      store.commit("setIsShowNavigation", true);
     }
 
     async function doUninstall(zap = false){
       resetForm();
-      await packageInfoObj.doUninstall(status, zap)   
+      store.commit("setIsShowNavigation", false);
+      await packageInfoObj.doUninstall(status, zap)         
       const brewInfo = new BrewInfo();
       await brewInfo.getInfoToStore(status, false, store);         
+      store.commit("setIsShowNavigation", true);
     }
 
     async function doInstall(){
       resetForm();
-      await packageInfoObj.doInstall(status)
+      store.commit("setIsShowNavigation", false);
+      await packageInfoObj.doInstall(status)      
       const brewInfo = new BrewInfo();
       await brewInfo.getInfoToStore(status, false, store);
-
+      store.commit("setIsShowNavigation", true);
     }
 
     function doPin() {
@@ -179,7 +187,7 @@ export default {
 
     return { searchType, packageInfo, searchName, status, getPackageInfo, isShowUsedIn, usedIn, 
           isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled,isInstalledZap,
-          doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant };
+          doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant, isShowNavigation };
   },
 };
 </script>

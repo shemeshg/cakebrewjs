@@ -345,12 +345,15 @@ export default {
     ];
 
     async function doUpgradeAll() {
+      store.commit("setIsShowNavigation", false);
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeAll(status);
+      store.commit("setIsShowNavigation", true);
       getInfo(false);
     }
 
     async function doUpgradeSelected() {
+      store.commit("setIsShowNavigation", false);
       const formulas = formulaSelectedUpgrade.value.map((row: any) => {
         return row.name;
       });
@@ -359,12 +362,15 @@ export default {
       });
       const brewInfo = new BrewInfo();
       await brewInfo.doUpgradeSelected(formulas, casks, status);
+      store.commit("setIsShowNavigation", true);
       getInfo(false);
     }
 
-    async function doDoctor() {
+    async function doDoctor() {      
+      store.commit("setIsShowNavigation", false);
       const brewInfo = new BrewInfo();
       await brewInfo.doDoctor(status);
+      store.commit("setIsShowNavigation", true);
     }
 
     async function startService(name: string){
