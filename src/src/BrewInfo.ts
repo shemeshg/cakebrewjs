@@ -30,31 +30,38 @@ export class BrewInfo extends ShellCmdUi {
     const cmdObj = await this.runCmd([["echo $(/usr/local/bin/brew --prefix)/Caskroom/"]], status)
     status.value = `Finished`
 
-    const caskRoomPath = this.getResultString(cmdObj)
+    const caskRoomPath = this.getResultString(cmdObj).trim()
 
-    if (typeof trashAry[0].trash === 'string' || trashAry[0].trash instanceof String){
+    if (typeof trashAry[0].trash === 'string' || trashAry[0].trash instanceof String) {
       trashAry[0].trash = [trashAry[0].trash]
     }
 
-    const trashWithArtifact = trashAry[0].trash.concat(
-      [caskRoomPath + localSearchItem[0].token + "/" + localSearchItem[0].installed]
-    )
-    
-    console.log("*****")
-    debugger;
-    console.log(trashWithArtifact)
+    const trashWithArtifact = trashAry[0].trash.concat([])
 
-    if (trashAry.length > 0) {
+    let retStr = ""
+    if (trashWithArtifact.length > 0) {
       // eslint-disable-next-line 
-      let cmd = ["du", "-hsL"].concat(trashWithArtifact)
+      let cmd = ["du", "-hsH"].concat(trashWithArtifact)
       cmd = cmd.concat("2>/dev/null|cat")
-
       const cmdObj = await this.runCmd([cmd], status)
       status.value = `Finished`
 
-      return this.getResultString(cmdObj)
+      retStr = this.getResultString(cmdObj)
     }
-    return "";
+
+    const caskRooomFolder = caskRoomPath + localSearchItem[0].token.trim() + "/" + localSearchItem[0].installed
+    let cmd = ["find " + caskRooomFolder + " -print0 | xargs -0 du -shHc | tail -n 1 "]
+    cmd = cmd.concat("2>/dev/null|cat")
+
+    const cmdObj1 = await this.runCmd([cmd], status)
+    status.value = `Finished`
+
+    retStr = retStr + "\nCaskRooom Folder " + this.getResultString(cmdObj1)
+
+    return retStr;
+
+
+
   }
 
 
