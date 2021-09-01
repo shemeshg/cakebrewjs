@@ -27,7 +27,7 @@ export class BrewInfo extends ShellCmdUi {
     const trashAry = localSearchItem[0].artifacts.filter((row: any) => { return row.trash })
     if (trashAry.length === 0) { trashAry[0] = { trash: [] } }
 
-    const cmdObj = await this.runCmd([["echo $(brew --prefix)/Caskroom/"]], status)
+    const cmdObj = await this.runCmd([["echo $(/usr/local/bin/brew --prefix)/Caskroom/"]], status)
     status.value = `Finished`
 
     const caskRoomPath = this.getResultString(cmdObj)
@@ -40,6 +40,10 @@ export class BrewInfo extends ShellCmdUi {
       [caskRoomPath + localSearchItem[0].token + "/" + localSearchItem[0].installed]
     )
     
+    console.log("*****")
+    debugger;
+    console.log(trashWithArtifact)
+
     if (trashAry.length > 0) {
       // eslint-disable-next-line 
       let cmd = ["du", "-hsL"].concat(trashWithArtifact)
