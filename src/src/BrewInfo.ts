@@ -1,4 +1,4 @@
-import {ShellCmdUi} from "./ShellCmdUi"
+import { ShellCmdUi } from "./ShellCmdUi"
 import { FormatData } from "./FormatData"
 import { Ref } from '@vue/composition-api'
 
@@ -8,7 +8,7 @@ export enum PackageType {
   formula
 }
 
-export class BrewInfo extends ShellCmdUi{
+export class BrewInfo extends ShellCmdUi {
 
 
   async getPackageInfo(packageType: PackageType, packageName: string, status: Ref) {
@@ -25,11 +25,26 @@ export class BrewInfo extends ShellCmdUi{
   async getCaskTrashSizeReport(localSearchItem: any, status: Ref) {
     // eslint-disable-next-line 
     const trashAry = localSearchItem[0].artifacts.filter((row: any) => { return row.trash })
+    if (trashAry.length === 0) { trashAry[0] = { trash: [] } }
 
+    const cmdObj = await this.runCmd([["echo $(brew --prefix)/Caskroom/"]], status)
+    status.value = `Finished`
+
+    const caskRoomPath = this.getResultString(cmdObj)
+
+    if (typeof trashAry[0].trash === 'string' || trashAry[0].trash instanceof String){
+      trashAry[0].trash = [trashAry[0].trash]
+    }
+
+    const trashWithArtifact = trashAry[0].trash.concat(
+      [caskRoomPath + localSearchItem[0].token + "/" + localSearchItem[0].installed]
+    )
+    
     if (trashAry.length > 0) {
       // eslint-disable-next-line 
-      let cmd = ["du", "-hs"].concat(trashAry[0].trash)
+      let cmd = ["du", "-hsL"].concat(trashWithArtifact)
       cmd = cmd.concat("2>/dev/null|cat")
+
       const cmdObj = await this.runCmd([cmd], status)
       status.value = `Finished`
 
@@ -96,7 +111,7 @@ export class BrewInfo extends ShellCmdUi{
 
 
   async startService(name: string, status: Ref) {
-    const cmd = ["/usr/local/bin/brew", "services","start",name]
+    const cmd = ["/usr/local/bin/brew", "services", "start", name]
 
     const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
@@ -104,18 +119,18 @@ export class BrewInfo extends ShellCmdUi{
   }
 
   async stopService(name: string, status: Ref) {
-    const cmd = ["/usr/local/bin/brew", "services","stop",name]
+    const cmd = ["/usr/local/bin/brew", "services", "stop", name]
 
     const cmdObj = await this.runExtermalCmd([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
 
-  async doUninstall(packageType: PackageType, packageName: string, status: Ref, zap=false) {
+  async doUninstall(packageType: PackageType, packageName: string, status: Ref, zap = false) {
     let cmd = ["/usr/local/bin/brew", "uninstall", "--cask"]
     if (packageType === PackageType.formula) {
       cmd = ["/usr/local/bin/brew", "uninstall", "--formula"]
-    } 
+    }
 
     if (packageType === PackageType.cask && zap) {
       cmd.push("--zap")
@@ -172,10 +187,10 @@ export class BrewInfo extends ShellCmdUi{
   }
 
   //eslint-disable-next-line 
-  async getInfoToStore(status: Ref, doBrewUpdate: boolean, store: any){
+  async getInfoToStore(status: Ref, doBrewUpdate: boolean, store: any) {
     const data = await this.getInfo(status, doBrewUpdate);
     store.commit("setBrewCasksInfo", data.brewCasksInfo);
     store.commit("setBrewLsFormulas", data.brewLsFormulas);
     store.commit("setBrewServices", data.brewServices);
-  } 
+  }
 }
