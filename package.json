@@ -1,6 +1,6 @@
 {
   "name": "cakebrewjs",
-  "version": "0.1.38",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

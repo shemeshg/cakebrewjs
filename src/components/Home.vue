@@ -149,13 +149,14 @@
               </b-form-checkbox>
             </template>
 
-            <template #cell(isLeaf)="row" >
+            <template #cell(isLeafSortOrder)="row" >
               
               <div class="mt-1"
                 v-if="row.item.isLeaf" 
               >🍃</div>
               <div v-if="!row.item.isLeaf" v-b-popover.hover.top='row.item.usedIn.join(" ")' title="Used in"> 
-                .
+                <span v-if="row.item.installedOnRequest">i</span>
+                <span v-if="!row.item.installedOnRequest">.</span>
               </div>
             </template>
 
@@ -332,7 +333,7 @@ export default {
       { key: "desc", sortable: true },
       { key: "ver", label: "Version", sortable: true },
       { key: "outdatedNewVer", label: "Outdated", sortable: true },
-      { key: "isLeaf", sortable: true, label: "Leaf" },
+      { key: "isLeafSortOrder", sortable: true, label: "Leaf" },
       { key: "actions", label: " " },
     ];
 
