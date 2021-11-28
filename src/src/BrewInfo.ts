@@ -36,10 +36,12 @@ export class BrewInfo extends ShellCmdUi {
       trashAry[0].trash = [trashAry[0].trash]
     }
 
-    const trashWithArtifact = trashAry[0].trash.concat([])
+    let trashWithArtifact = trashAry[0].trash.concat([])
 
     let retStr = ""
     if (trashWithArtifact.length > 0) {
+      trashWithArtifact = trashWithArtifact.map( (str: string)=>{return str.replace(/^\$\(brew --prefix\)/,"/usr/local");})
+
       // eslint-disable-next-line 
       let cmd = ["du", "-hsH"].concat(trashWithArtifact)
       cmd = cmd.concat("2>/dev/null|cat")
