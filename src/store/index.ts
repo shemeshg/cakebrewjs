@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {Ls} from "../src/Ls"
+
 
 Vue.use(Vuex)
 
@@ -14,8 +16,13 @@ export default new Vuex.Store({
     statusVariantHome: "info",
     statusInfo: "Finished",
     statusVariantInfo: "info",
+    brewLocation: Ls.brewLocation
   },
   mutations: {
+    setBrewLocation: (state, val) => {
+      state.brewLocation = val;
+      Ls.brewLocation = val;
+    },
     setBrewCasksInfo: (state, val) => {
       state.brewCasksInfo = val;
     },

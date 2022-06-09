@@ -4,7 +4,7 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/info">Info</router-link> |
       <b-link href="#"  @click="reouteBrewSh">://brew.sh</b-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/about">About and settings</router-link>
     </div>
     <router-view />
   </div>

@@ -1,5 +1,14 @@
 <template>
   <b-container fluid>
+    <h2>Settings</h2>
+    Brew location : 
+          <b-form-input
+        class="mb-2 mr-sm-2 mb-sm-0"
+        v-model="brewLocation"
+        autofocus
+      ></b-form-input>
+      <hr/>
+  <h2>Credits</h2>
     <p>Icons made by Freepik from www.flaticon.com</p>
     <p>https://github.com/shemeshg/cakebrewjs</p>
 <h2>License</h2>
@@ -9,3 +18,23 @@
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
   </b-container>
 </template>
+
+<script lang="ts">
+import { computed, inject } from "@vue/composition-api";
+
+export default {
+  components: {
+  },
+    /* eslint-disable */
+  setup(prop: any, ctx: any) {
+    // eslint-disable-next-line
+    const store: any = inject("vuex-store");
+    const brewLocation = computed({get: () => store.state.brewLocation, set: (val)=>{
+      store.commit("setBrewLocation", val);
+    }});
+
+    return {brewLocation};
+
+  }
+}
+</script>
