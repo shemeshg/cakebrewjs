@@ -1,3 +1,5 @@
+import {Ls} from "../src/Ls"
+
 const exec = require("electron").remote.require("child_process").exec
 
 class ExeStatus {
@@ -49,7 +51,7 @@ export class ShellCmd {
   
       this.execRunStatus = ExecRunStatus.RUNNING
       // eslint-disable-next-line 
-      this.child = exec(this.cmd, (e: any, std: string, err: string) => {
+      this.child = exec(this.cmd, {maxBuffer: Ls.stdoutMaxBuffer}, (e: any, std: string, err: string) => {
         if (exitCodeExe === -1) {
           enddedBeforOndata = true
           if (e !== null && result.length === 0) {
