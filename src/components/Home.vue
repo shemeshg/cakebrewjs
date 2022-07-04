@@ -28,7 +28,7 @@
       <a class="m-1" @click="toggleCaskVisible()">
         <b-icon icon="arrows-collapse" aria-hidden="true"></b-icon>
         Toggle Cask ({{
-          brewCasksInfo.filter((row) => {
+          brewCasksInfo.filter((row)  => {
             return row.outdated;
           }).length
         }})</a
@@ -234,8 +234,9 @@
 </template>
 
 <script lang="ts">
-import { computed, inject, ref, Ref } from "@vue/composition-api";
+import { computed, inject, ref } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
+import {Ls} from "../src/Ls"
 
 export default {
   /* eslint-disable */
@@ -249,35 +250,28 @@ export default {
     // eslint-disable-next-line
     const brewServices = computed(() => store.state.brewServices);
 
-    const _getBoolLocalStorage = (key: string) => {
-      const i = localStorage.getItem(key);
-      if (i === null) {
-        return false;
-      }
-      return Boolean(JSON.parse(i));
-    };
 
-    const _toggleBoolLocalStorage = (key: string, r: Ref<boolean>) =>{
-      const s = !r.value;
-      const b = JSON.stringify(s);
-      localStorage.setItem(key, b);
-      r.value = s;
-    }
 
-    const caskVisible = ref(_getBoolLocalStorage("caskVisible"));
+
+
+    const caskVisible = ref(Ls.caskVisible);
     const toggleCaskVisible = () => {
-      _toggleBoolLocalStorage("caskVisible", caskVisible)
+      caskVisible.value = !caskVisible.value
+      Ls.caskVisible = caskVisible.value;
+      
     };
 
-    const formulaVisible = ref(_getBoolLocalStorage("formulaVisible"));
+    const formulaVisible = ref(Ls.formulaVisible);
     const toggleFormulaVisible = () => {
-      _toggleBoolLocalStorage("formulaVisible", formulaVisible)
+      formulaVisible.value = !formulaVisible.value
+      Ls.formulaVisible = formulaVisible.value;
     };
 
 
-    const servicesVisible = ref(_getBoolLocalStorage("servicesVisible"));
+    const servicesVisible = ref(Ls.servicesVisible);
     const toggleServicesVisible = () => {
-      _toggleBoolLocalStorage("servicesVisible", servicesVisible)
+      servicesVisible.value = !servicesVisible.value
+      Ls.servicesVisible = servicesVisible.value;
     };
 
     const formulaSelectedUpgrade = computed(() =>
