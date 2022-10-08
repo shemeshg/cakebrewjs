@@ -15,7 +15,9 @@
         autofocus
         @keydown.enter.native="getPackageInfo()"
       ></b-form-input>
-      <b-button variant="primary" @click="getPackageInfo()">Info</b-button>
+      <b-button variant="primary" class="mr-1" @click="getPackageInfo()">Info</b-button>
+      <b-button variant="primary" class="mr-1" v-if="homeUrl()"  @click="openHomeUrl()">&#127968;</b-button>
+      <b-button variant="primary" class="mr-1" v-if="homeUrl()"  @click="openRbUrl()">&#128220;</b-button>
     </b-form>
     <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
         <div  v-html="status"> </div>
@@ -23,7 +25,7 @@
     <pre>{{ packageInfo }}         
 <span v-if="isShowUsedIn"> Used in: {{usedIn}}</span>       
   </pre>
- <p>
+ <p>  
       <b-button size="sm" class="mr-1"  v-if="isShowPin" @click="doPin">Pin</b-button>
       <b-button size="sm" class="mr-1"  v-if="isShowUnpin" @click="doUnpin">Unpin</b-button>
       <b-button size="sm" class="mr-1"  v-if="isShowUpgrade" @click="doUpgrade">Upgrade</b-button>
@@ -136,7 +138,37 @@ export default {
       return packageInfoObj.doUnpin(status)
     }
 
+    function homeUrl(){
+      const s = packageInfo.value.split("\n");
+      let homeUrlS = ""
+      s.forEach(row => {        
+        if (!homeUrlS && row.startsWith('http')){
+          homeUrlS = row;
+        }
+      });
+      return homeUrlS;
+    }
 
+    function rbUrl(){
+      const s = packageInfo.value.split("\n");
+      let homeUrlS = ""
+      s.forEach(row => {        
+        if (!homeUrlS && row.startsWith('From: ')){
+          homeUrlS = row.substr(6);
+        }
+      });
+      return homeUrlS;      
+    }
+
+    function openHomeUrl(){
+      const { shell } = require("electron");
+      shell.openExternal(homeUrl());
+    }
+
+    function openRbUrl(){
+      const { shell } = require("electron");
+      shell.openExternal(rbUrl());
+    }
 
     async function getPackageInfo() {
       resetForm()
@@ -174,7 +206,6 @@ export default {
       isShowInstall.value = packageInfoObj.isShowInstall
       isInstalled.value = packageInfoObj.isInstalled
       isInstalledZap.value = packageInfoObj.isInstalledZap
-
     }
 
 
@@ -187,7 +218,8 @@ export default {
 
     return { searchType, packageInfo, searchName, status, getPackageInfo, isShowUsedIn, usedIn, 
           isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled,isInstalledZap,
-          doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant, isShowNavigation };
+          doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant, isShowNavigation, homeUrl, 
+          openHomeUrl, openRbUrl };
   },
 };
 </script>
