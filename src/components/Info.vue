@@ -16,8 +16,8 @@
         @keydown.enter.native="getPackageInfo()"
       ></b-form-input>
       <b-button variant="primary" class="mr-1" @click="getPackageInfo()">Info</b-button>
-      <b-button variant="primary" class="mr-1" v-if="homeUrl()"  @click="openHomeUrl()">&#127968;</b-button>
-      <b-button variant="primary" class="mr-1" v-if="homeUrl()"  @click="openRbUrl()">&#128220;</b-button>
+      <b-button variant="primary" class="mr-1" v-b-tooltip.hover :title="homeUrl()" v-if="homeUrl()"  @click="openHomeUrl()">&#127968;</b-button>
+      <b-button variant="primary" class="mr-1" v-b-tooltip.hover :title="rbUrl()" v-if="homeUrl()"  @click="openRbUrl()">&#128220;</b-button>
     </b-form>
     <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
         <div  v-html="status"> </div>
@@ -218,7 +218,7 @@ export default {
 
     return { searchType, packageInfo, searchName, status, getPackageInfo, isShowUsedIn, usedIn, 
           isShowPin, isShowUnpin, isShowUpgrade, isShowInstall, isInstalled,isInstalledZap,
-          doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant, isShowNavigation, homeUrl, 
+          doPin, doUnpin, doUpgrade, doUninstall, doInstall, statusVariant, isShowNavigation, homeUrl,rbUrl,
           openHomeUrl, openRbUrl };
   },
 };
