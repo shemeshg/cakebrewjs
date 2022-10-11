@@ -195,7 +195,7 @@ export class BrewInfo extends ShellCmdUi {
 
     const brewLs = await this.runCmd([[Ls.brewLocation, "info", "--installed", "--json=v2"]], status);
     const brewOutdated = await this.runCmd([[Ls.brewLocation, "outdated", "--json=v2"]], status);
-    const brewSservices = await this.runCmd([[Ls.brewLocation, "services"]], status);
+    const brewSservices = await this.runCmd([[Ls.brewLocation, "services","--json"]], status);
 
     status.value = `Finished`
     return new FormatData(this.getResultString(brewLs), this.getResultString(brewOutdated), this.getResultString(brewSservices));

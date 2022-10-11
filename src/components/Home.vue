@@ -215,13 +215,17 @@
 
             <template #cell(actions)="row">
               
-              <a class="m-1" 
-              v-if="row.item.status === 'stopped'"
+              <a 
+              href="#"
+              class="m-1" 
+              v-if="row.item.status === 'none'"
               @click="startService(row.item.name)" >
                  Start {{row.item.name}}
               </a>
-              <a class="m-1" 
-              v-if="row.item.status !== 'stopped'"
+              <a
+              href="#"
+              class="m-1" 
+              v-if="row.item.status !== 'none'"
               @click="stopService(row.item.name)"> 
                  Stop {{row.item.name}}
               </a>              

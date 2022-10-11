@@ -1,8 +1,8 @@
-interface BrewServicesI {
-  name: string;
-  status: string;
-  user: string;
-  plist: string;
+class BrewServicesI {
+  name = "";
+  status = "";
+  user = "";
+  plist = "";
 }
 
 export class FormatData {
@@ -14,21 +14,17 @@ export class FormatData {
   brewServices: BrewServicesI[]
   
   private parseBreServices( s: string){
-    const lines = s.split("\n")
-    const h = lines[0]
-    const ret: BrewServicesI[] = []
-    lines.slice(1).forEach( (l)=>{
-      const name = l.substring(0, h.search("Status")).trim()
-      if (name) {
-        ret.push({
-          name: name,
-          status: l.substring(h.search("Status"), h.search("User")).trim(),
-          user: l.substring(h.search("User"), h.search("Plist")).trim(),
-          plist: l.substring(h.search("Plist")).trim(),
-        })
-      }
-
-    })
+    const lines = JSON.parse(s)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ret: BrewServicesI[] = lines.map((row: any)=>{
+      const i = new BrewServicesI();
+      i.name = row.name;
+      i.status = row.status;
+      i.user = row.user
+      i.plist = row.file
+      return i
+      })
+   
     return ret
   }
 
