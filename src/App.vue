@@ -3,6 +3,7 @@
     <div id="nav" v-if="isShowNavigation">
       <router-link to="/">Home</router-link> |
       <router-link to="/info">Info</router-link> |
+      <router-link to="/Search">Search</router-link> |
       <b-link href="#"  @click="reouteBrewSh">://brew.sh</b-link> |
       <router-link to="/about">About and settings</router-link>
     </div>
