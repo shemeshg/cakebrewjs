@@ -54,7 +54,9 @@ export default {
       if (!searchName.value){return;}
       const brewInfo = new BrewInfo();
       try {
-        searchInfo.value = await brewInfo.getSearch( searchName.value, status);
+        const ret = await brewInfo.getSearch( searchName.value, status);
+        searchInfo.value = ret.caskResult + "\n****\n" + ret.formulaResult;
+        
       } catch (e) {
         statusVariant.value = "danger";
         throw e

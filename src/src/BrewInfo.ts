@@ -39,7 +39,7 @@ export class BrewInfo extends ShellCmdUi {
     status.value = `Finished`
     const formulaResult =  this.getResultString(cmdObjFormula)
 
-    return caskResult + "\n *** \n" + formulaResult;
+    return {caskResult ,formulaResult};
 
   }
 
