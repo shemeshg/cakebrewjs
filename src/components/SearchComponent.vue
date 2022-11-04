@@ -1,15 +1,63 @@
 <template>
   <b-container fluid>
-    <h1>Search component</h1>
+    <b-form @submit.stop.prevent inline v-if="isShowNavigation">
+      <b-form-input
+        class="mb-2 mr-sm-2 mb-sm-0"
+        placeholder="name"
+        v-model="searchName"
+        autofocus
+        @keydown.enter.native="getPackageInfo()"
+      ></b-form-input>
+      <b-button variant="primary" class="mr-1" @click="getPackageInfo()">Search</b-button>
+
+    </b-form>
+    <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
+        <div  v-html="status"> </div>
+    </b-alert>
+
   </b-container>
 </template>
 
 
 <script lang="ts">
+import { ref, Ref, computed, inject } from "@vue/composition-api";
+
 export default {
   setup() {
+    // eslint-disable-next-line
+    const store: any = inject("vuex-store");
+
+    // eslint-disable-next-line
+    const isShowNavigation = computed(() => store.state.isShowNavigation);
+
+    // eslint-disable-next-line
+    const status = computed({get: () => store.state.statusInfo, set: (val)=>{
+      store.commit("setStatusInfo", val);
+    }});
+    const statusVariant = computed({get: () => store.state.statusVariantInfo, set: (val)=>{
+      store.commit("setStatusVariantInfo", val);
+    }});
+
+    const searchName = ref("");
     
-    return {};
+    
+    function resetForm(){
+      statusVariant.value = "info";
+    }
+
+
+    const  getPackageInfo = async () => {
+      resetForm();
+      try {
+        alert("asdfsadf")
+      } catch (e) {
+        statusVariant.value = "danger";
+        throw e
+      }
+      
+
+    }
+    return {isShowNavigation, searchName, getPackageInfo, resetForm, status, statusVariant};
   },
 };
 </script>
