@@ -20,7 +20,7 @@
 
 
 <script lang="ts">
-import { ref, Ref, computed, inject } from "@vue/composition-api";
+import { ref, computed, inject } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
@@ -51,6 +51,7 @@ export default {
 
     const  getPackageInfo = async () => {
       resetForm();
+      if (!searchName.value){return;}
       const brewInfo = new BrewInfo();
       try {
         searchInfo.value = await brewInfo.getSearch( searchName.value, status);
