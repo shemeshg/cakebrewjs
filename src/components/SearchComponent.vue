@@ -161,8 +161,9 @@ export default {
       const brewInfo = new BrewInfo();
       try {
         const ret = await brewInfo.getSearch(searchName.value, status);
-        caskList.value = parseCask(ret.caskResult);
-        formulaList.value = parseFormula(ret.formulaResult)
+        caskList.value = ret.caskResult ? parseCask(ret.caskResult) : [];
+        
+        formulaList.value =ret.formulaResult ? parseFormula(ret.formulaResult) : [];
       } catch (e) {
         statusVariant.value = "danger";
         throw e;
