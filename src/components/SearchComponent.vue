@@ -3,7 +3,7 @@
     <b-form @submit.stop.prevent inline v-if="isShowNavigation">
       <b-form-input
         class="mb-2 mr-sm-2 mb-sm-0"
-        placeholder="name"
+        placeholder="Regex example /^r/"
         v-model="searchName"
         autofocus
         @keydown.enter.native="getPackageInfo()"
