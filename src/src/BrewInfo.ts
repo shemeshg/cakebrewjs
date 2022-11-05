@@ -26,10 +26,10 @@ export class BrewInfo extends ShellCmdUi {
 
   async getSearch(textSearch: string, status: Ref){
     let cmdCask = [[Ls.brewLocation, "search", "--cask", textSearch]]
-    cmdCask = cmdCask.concat([["xargs", Ls.brewLocation,"info","--cask","--json=v2"]])
+    cmdCask = cmdCask.concat([["head -50"],["xargs", Ls.brewLocation,"info","--cask","--json=v2"]])
     
     let cmdFormula = [[Ls.brewLocation, "search", "--formula", textSearch]]
-    cmdFormula = cmdFormula.concat([["xargs", Ls.brewLocation,"info","--formula","--json=v2"]])
+    cmdFormula = cmdFormula.concat([["head -50"],["xargs", Ls.brewLocation,"info","--formula","--json=v2"]])
 
     const cmdObjCask = await this.runCmd(cmdCask, status,undefined,undefined,"|")
     status.value = `Finished`

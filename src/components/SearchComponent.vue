@@ -154,10 +154,12 @@ export default {
 
     const getPackageInfo = async () => {
       resetForm();
-      store.commit("setIsShowNavigation", false);
+      searchName.value = searchName.value.trim();
       if (!searchName.value) {
         return;
       }
+      store.commit("setIsShowNavigation", false);
+
       const brewInfo = new BrewInfo();
       try {
         const ret = await brewInfo.getSearch(searchName.value, status);
@@ -166,6 +168,7 @@ export default {
         formulaList.value =ret.formulaResult ? parseFormula(ret.formulaResult) : [];
       } catch (e) {
         statusVariant.value = "danger";
+        store.commit("setIsShowNavigation", true);
         throw e;
       }
       store.commit("setIsShowNavigation", true);
