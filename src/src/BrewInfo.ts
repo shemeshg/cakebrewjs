@@ -24,6 +24,25 @@ export class BrewInfo extends ShellCmdUi {
     return this.getResultString(cmdObj)
   }
 
+  async getSearch(textSearch: string, status: Ref){
+    let cmdCask = [[Ls.brewLocation, "search", "--cask", textSearch]]
+    cmdCask = cmdCask.concat([["xargs", Ls.brewLocation,"info","--cask","--json=v2"]])
+    
+    let cmdFormula = [[Ls.brewLocation, "search", "--formula", textSearch]]
+    cmdFormula = cmdFormula.concat([["xargs", Ls.brewLocation,"info","--formula","--json=v2"]])
+
+    const cmdObjCask = await this.runCmd(cmdCask, status,undefined,undefined,"|")
+    status.value = `Finished`
+    const caskResult =  this.getResultString(cmdObjCask)
+
+    const cmdObjFormula = await this.runCmd(cmdFormula, status,undefined,undefined,"|")
+    status.value = `Finished`
+    const formulaResult =  this.getResultString(cmdObjFormula)
+
+    return {caskResult ,formulaResult};
+
+  }
+
   // eslint-disable-next-line 
   async getCaskTrashSizeReport(localSearchItem: any, status: Ref) {
     // eslint-disable-next-line 

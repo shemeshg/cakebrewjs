@@ -4,12 +4,12 @@ import { Ref } from '@vue/composition-api'
 export class ShellCmdUi {
 
 
-  private getEscapedCmd(strRows: string[][]) {
+  private getEscapedCmd(strRows: string[][], strJoinWith=";") {
     const row: string[] = []
     strRows.forEach( str =>{
       row.push( str.reduce((p, c) => { return p + ` ${this.escapeCmdParam(c)} ` }) )
     })
-    return row.join(";")
+    return row.join(strJoinWith)
   }
 
   private escapeCmdParam(s: string) {
@@ -43,13 +43,13 @@ export class ShellCmdUi {
     })
   }
 
-  protected async runCmd(str: string[][], status: Ref, noEscapedString = "", moreInfo = "") {
+  protected async runCmd(str: string[][], status: Ref, noEscapedString = "", moreInfo = "", strJoinWith=";") {
 
     let shellCmd: ShellCmd;
     if (noEscapedString) {
       shellCmd = new ShellCmd(noEscapedString)
     } else {
-      shellCmd = new ShellCmd(this.getEscapedCmd(str));
+      shellCmd = new ShellCmd(this.getEscapedCmd(str,strJoinWith));
     }
 
     
