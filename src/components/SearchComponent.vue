@@ -8,13 +8,35 @@
         autofocus
         @keydown.enter.native="getPackageInfo()"
       ></b-form-input>
-      <b-button variant="primary" class="mr-1" @click="getPackageInfo()">Search</b-button>
-
+      <b-button variant="primary" class="mr-1" @click="getPackageInfo()"
+        >Search</b-button
+      >
     </b-form>
-    <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'" >
-        <div  v-html="status"> </div>
+    <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'">
+      <div v-html="status"></div>
     </b-alert>
-    <pre>{{ searchInfo }}</pre>
+    <h4 v-if="caskList.length > 0">Cask</h4>
+    <ul>
+      <li v-for="(item) in caskList" v-bind:key="item.token">{{item.name}}(<a 
+              href="#"
+              class="m-1"               
+              @click="redirectInfo(item.token, 'cask')" >
+              {{item.token}}
+              </a>) {{item.version}} <span style="color: green" v-if="item.installed">installed</span>
+        -        
+        <a 
+              href="#"
+              class="m-1"               
+              @click="openUrl(item.homepage)" >
+              {{item.homepage}}
+        </a><br/>
+        {{item.desc}}
+      </li>
+    </ul>
+    <pre>
+
+      
+      {{ searchInfo }}</pre>
   </b-container>
 </template>
 
@@ -24,7 +46,8 @@ import { ref, computed, inject } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
 export default {
-  setup() {
+/* eslint-disable */
+    setup(prop: any, ctx: any) {
     // eslint-disable-next-line
     const store: any = inject("vuex-store");
 
@@ -32,39 +55,86 @@ export default {
     const isShowNavigation = computed(() => store.state.isShowNavigation);
 
     // eslint-disable-next-line
-    const status = computed({get: () => store.state.statusInfo, set: (val)=>{
-      store.commit("setStatusInfo", val);
-    }});
-    const statusVariant = computed({get: () => store.state.statusVariantInfo, set: (val)=>{
-      store.commit("setStatusVariantInfo", val);
-    }});
+    const status = computed({
+      get: () => store.state.statusInfo,
+      set: (val) => {
+        store.commit("setStatusInfo", val);
+      },
+    });
+    const statusVariant = computed({
+      get: () => store.state.statusVariantInfo,
+      set: (val) => {
+        store.commit("setStatusVariantInfo", val);
+      },
+    });
 
     const searchName = ref("");
     const searchInfo = ref("");
+    const caskList = ref([]);
 
-    
-    function resetForm(){
+    function resetForm() {
       statusVariant.value = "info";
       searchInfo.value = "";
     }
 
+    const parseCask = (s: string) => {
+      const json = JSON.parse(s);
+      const rows = json.casks.map((row: any) => {
+        return {
+          token: row.token,
+          name: row.name[0],
+          version: row.version,
+          homepage: row.homepage,
+          installed: row.installed,
+          desc: row.desc,
+        };
+      });
+      return rows;
+    };
 
-    const  getPackageInfo = async () => {
+    const redirectInfo= (name: string, searchType: "formula"|"cask") =>{
+      ctx.root.$router.push({
+        path: `/info/${encodeURI(
+          JSON.stringify({ searchType: searchType, searchName: name })
+        )}`,
+      });
+    }
+
+    const openUrl = (s: string)=>{
+      const { shell } = require("electron");
+      shell.openExternal(s);
+    }
+
+    const getPackageInfo = async () => {
       resetForm();
-      if (!searchName.value){return;}
+      if (!searchName.value) {
+        return;
+      }
       const brewInfo = new BrewInfo();
       try {
-        const ret = await brewInfo.getSearch( searchName.value, status);
-        searchInfo.value = ret.caskResult + "\n****\n" + ret.formulaResult;
-        
+        const ret = await brewInfo.getSearch(searchName.value, status);
+        searchInfo.value =
+          JSON.stringify(parseCask(ret.caskResult)) +
+          "\n****\n" +
+          ret.formulaResult;
+        caskList.value = parseCask(ret.caskResult);
       } catch (e) {
         statusVariant.value = "danger";
-        throw e
+        throw e;
       }
-      
-
-    }
-    return {isShowNavigation, searchName, getPackageInfo, resetForm, status, statusVariant, searchInfo};
+    };
+    return {
+      isShowNavigation,
+      searchName,
+      getPackageInfo,
+      resetForm,
+      status,
+      statusVariant,
+      searchInfo,
+      caskList,
+      redirectInfo,
+      openUrl
+    };
   },
 };
 </script>
