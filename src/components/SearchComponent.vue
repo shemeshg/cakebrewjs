@@ -17,7 +17,7 @@
     </b-alert>
     <h4 v-if="caskList.length > 0">Cask</h4>
     <ul>
-      <li v-for="(item) in caskList" v-bind:key="item.token">{{item.name}}(<a 
+      <li v-for="(item, idx) in caskList" v-bind:key="idx">{{item.name}}(<a 
               href="#"
               class="m-1"               
               @click="redirectInfo(item.token, 'cask')" >
@@ -33,10 +33,26 @@
         {{item.desc}}
       </li>
     </ul>
-    <pre>
 
-      
-      {{ searchInfo }}</pre>
+    <h4 v-if="formulaList.length > 0">Formula</h4>
+    <ul>
+      <li v-for="(item, idx) in formulaList" v-bind:key="idx">{{item.name}}(<a 
+              href="#"
+              class="m-1"               
+              @click="redirectInfo(item.token, 'formula')" >
+              {{item.token}}
+              </a>) {{item.version}} <span style="color: green" v-if="item.installed">installed</span>
+        -        
+        <a 
+              href="#"
+              class="m-1"               
+              @click="openUrl(item.homepage)" >
+              {{item.homepage}}
+        </a><br/>
+        {{item.desc}}
+      </li>
+    </ul>    
+
   </b-container>
 </template>
 
@@ -44,6 +60,8 @@
 <script lang="ts">
 import { ref, computed, inject } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
+
+const caskListAry: any[] = [];
 
 export default {
 /* eslint-disable */
@@ -69,12 +87,13 @@ export default {
     });
 
     const searchName = ref("");
-    const searchInfo = ref("");
-    const caskList = ref([]);
+
+    
+    const caskList = ref(caskListAry);
+    const formulaList = ref([]);
 
     function resetForm() {
       statusVariant.value = "info";
-      searchInfo.value = "";
     }
 
     const parseCask = (s: string) => {
@@ -86,6 +105,21 @@ export default {
           version: row.version,
           homepage: row.homepage,
           installed: row.installed,
+          desc: row.desc,
+        };
+      });
+      return rows;
+    };
+
+    const parseFormula = (s: string) => {
+      const json = JSON.parse(s);
+      const rows = json.formulae.map((row: any) => {
+        return {
+          token: row.name,
+          name: row.full_name,
+          version: row.versions.stable,
+          homepage: row.homepage,
+          installed: row.installed.length,
           desc: row.desc,
         };
       });
@@ -113,11 +147,8 @@ export default {
       const brewInfo = new BrewInfo();
       try {
         const ret = await brewInfo.getSearch(searchName.value, status);
-        searchInfo.value =
-          JSON.stringify(parseCask(ret.caskResult)) +
-          "\n****\n" +
-          ret.formulaResult;
         caskList.value = parseCask(ret.caskResult);
+        formulaList.value = parseFormula(ret.formulaResult)
       } catch (e) {
         statusVariant.value = "danger";
         throw e;
@@ -130,10 +161,10 @@ export default {
       resetForm,
       status,
       statusVariant,
-      searchInfo,
       caskList,
       redirectInfo,
-      openUrl
+      openUrl,
+      formulaList
     };
   },
 };
