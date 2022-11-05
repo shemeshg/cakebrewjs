@@ -15,8 +15,8 @@
     <b-alert show v-bind:variant="statusVariant" v-if="status !== 'Finished'">
       <div v-html="status"></div>
     </b-alert>
-    <h4 v-if="caskList.length > 0">Cask</h4>
-    <ul>
+    <a class="m-1"  v-if="caskList.length > 0" @click="toggleCaskVisible"><b-icon icon="arrows-collapse" aria-hidden="true"></b-icon> Cask</a>
+    <ul v-if="caskVisible">
       <li v-for="(item, idx) in caskList" v-bind:key="idx">{{item.name}}(<a 
               href="#"
               class="m-1"               
@@ -33,9 +33,9 @@
         {{item.desc}}
       </li>
     </ul>
-
-    <h4 v-if="formulaList.length > 0">Formula</h4>
-    <ul>
+    <br/>
+    <a class="m-1" v-if="formulaList.length > 0" @click="toggleFormulaVisible"><b-icon icon="arrows-collapse" aria-hidden="true"></b-icon> Formula</a>
+    <ul v-if="formulaVisible">
       <li v-for="(item, idx) in formulaList" v-bind:key="idx">{{item.name}}(<a 
               href="#"
               class="m-1"               
@@ -61,7 +61,7 @@
 import { ref, computed, inject } from "@vue/composition-api";
 import { BrewInfo } from "../src/BrewInfo";
 
-const caskListAry: any[] = [];
+
 
 export default {
 /* eslint-disable */
@@ -89,11 +89,24 @@ export default {
     const searchName = ref("");
 
     
-    const caskList = ref(caskListAry);
+    const caskList = ref([]);
     const formulaList = ref([]);
+
+    const caskVisible = ref(true);
+    const formulaVisible = ref(true);
+
+    const toggleCaskVisible=()=>{
+      caskVisible.value = !caskVisible.value
+    }
+    const toggleFormulaVisible=()=>{
+      formulaVisible.value = !formulaVisible.value
+    }
+
 
     function resetForm() {
       statusVariant.value = "info";
+      caskList.value = [];
+      formulaList.value = [];      
     }
 
     const parseCask = (s: string) => {
@@ -141,6 +154,7 @@ export default {
 
     const getPackageInfo = async () => {
       resetForm();
+      store.commit("setIsShowNavigation", false);
       if (!searchName.value) {
         return;
       }
@@ -153,6 +167,7 @@ export default {
         statusVariant.value = "danger";
         throw e;
       }
+      store.commit("setIsShowNavigation", true);
     };
     return {
       isShowNavigation,
@@ -164,7 +179,12 @@ export default {
       caskList,
       redirectInfo,
       openUrl,
-      formulaList
+      formulaList,
+      toggleCaskVisible,
+      toggleFormulaVisible,
+      caskVisible,
+      formulaVisible
+
     };
   },
 };
