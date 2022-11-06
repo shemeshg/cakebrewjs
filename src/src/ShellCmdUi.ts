@@ -13,7 +13,7 @@ export class ShellCmdUi {
   }
 
   private escapeCmdParam(s: string) {
-    return s.replace(/([";&|\s'$`\\])/g, '\\$1')
+    return s.replace(/(["*;&|\s'$`\\])/g, '\\$1')
   }
 
   private externalTerminalCmd(cmd: string[][]) {
