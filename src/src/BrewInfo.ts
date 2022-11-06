@@ -74,10 +74,11 @@ export class BrewInfo extends ShellCmdUi {
     }
 
     const caskRooomFolder = caskRoomPath + localSearchItem[0].token.trim() + "/" + localSearchItem[0].installed
-    let cmd = ["find " + caskRooomFolder + " -print0 | xargs -0 du -shHc | tail -n 1 "]
-    cmd = cmd.concat("2>/dev/null|cat")
+    const cmd = [["find ",caskRooomFolder,"-print0"],["xargs -0 du -shHc "],["tail -n 1 2>/dev/null"],["cat"]]
 
-    const cmdObj1 = await this.runCmd([cmd], status)
+
+    const cmdObj1 = await this.runCmd(cmd, status,undefined,undefined,"|")
+
     status.value = `Finished`
 
     retStr = retStr + "\nCaskRooom Folder " + this.getResultString(cmdObj1)
