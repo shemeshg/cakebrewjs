@@ -46,28 +46,46 @@ export class BrewInfo extends ShellCmdUi {
   // eslint-disable-next-line 
   async getCaskTrashSizeReport(localSearchItem: any, status: Ref) {
     // eslint-disable-next-line 
-    const trashAry = localSearchItem[0].artifacts.filter((row: any) => { return row.trash })
-    if (trashAry.length === 0) { trashAry[0] = { trash: [] } }
+    const trashAry = localSearchItem[0].artifacts.filter((row: any) => { return row.zap })
+    
+    let trashWithArtifact: string[] =[];
+    if (trashAry.length > 0){
+      if (trashAry[0].zap[0].trash.length > 0) {
+        if (typeof trashAry[0].zap[0].trash === 'string' || trashAry[0].zap[0].trash instanceof String) {
+          trashWithArtifact = [trashAry[0].zap[0].trash]
+        } else {
+          trashWithArtifact = trashAry[0].zap[0].trash
+        }
+        
+      } else if (trashAry[0].zap[0][0].trash.length > 0){
+        if (typeof trashAry[0].zap[0][0].trash.trash === 'string' || trashAry[0].zap[0][0].trash.trash instanceof String) {
+          trashWithArtifact = [trashAry[0].zap[0][0].trash]
+        } else {
+          trashWithArtifact = trashAry[0].zap[0][0].trash
+        }
+        
+      }
+    }
+
+    
 
     const cmdObj = await this.runCmd([[`echo $(${Ls.brewLocation} --prefix)/Caskroom/`]], status)
     status.value = `Finished`
 
     const caskRoomPath = this.getResultString(cmdObj).trim()
 
-    if (typeof trashAry[0].trash === 'string' || trashAry[0].trash instanceof String) {
-      trashAry[0].trash = [trashAry[0].trash]
-    }
 
-    let trashWithArtifact = trashAry[0].trash.concat([])
+    
 
     let retStr = ""
     if (trashWithArtifact.length > 0) {
       trashWithArtifact = trashWithArtifact.map( (str: string)=>{return str.replace(/^\$\(brew --prefix\)/,"/usr/local");})
 
       // eslint-disable-next-line 
-      let cmd = ["du", "-hsH"].concat(trashWithArtifact)
-      cmd = cmd.concat("2>/dev/null|cat")
-      const cmdObj = await this.runCmd([cmd], status)
+      let cmd = [["du", "-hsH"].concat(trashWithArtifact,"2>/dev/null"),["cat"]]
+
+    
+      const cmdObj = await this.runCmd(cmd, status,undefined,undefined,"|")
       status.value = `Finished`
 
       retStr = this.getResultString(cmdObj)
