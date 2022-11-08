@@ -69,17 +69,13 @@ export class BrewInfo extends ShellCmdUi {
 
     
 
-    const cmdObj = await this.runCmd([[`echo $(${Ls.brewLocation} --prefix)/Caskroom/`]], status)
-    status.value = `Finished`
-
-    const caskRoomPath = this.getResultString(cmdObj).trim()
-
-
+    const brewPrefix = Ls.brewLocation.replace("/bin/brew","")
+    const caskRoomPath =  `${brewPrefix}/Caskroom/`
     
-
     let retStr = ""
     if (trashWithArtifact.length > 0) {
-      trashWithArtifact = trashWithArtifact.map( (str: string)=>{return str.replace(/^\$\(brew --prefix\)/,"/usr/local");})
+      trashWithArtifact = trashWithArtifact.map( (str: string)=>{return str.replace(/^\$\(brew --prefix\)/,
+      brewPrefix);})
 
       // eslint-disable-next-line 
       let cmd = [["du", "-hsH"].concat(trashWithArtifact,"2>/dev/null"),["cat"]]
