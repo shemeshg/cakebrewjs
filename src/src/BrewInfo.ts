@@ -69,7 +69,7 @@ export class BrewInfo extends ShellCmdUi {
 
     
 
-    const brewPrefix = Ls.brewLocation.replace("/bin/brew","")
+    const brewPrefix = Ls.brewPrefix
     const caskRoomPath =  `${brewPrefix}/Caskroom/`
     
     let retStr = ""

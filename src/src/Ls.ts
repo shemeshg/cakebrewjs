@@ -1,12 +1,29 @@
 class LsClass {
   get brewLocation() {
-    return localStorage.getItem("brewLocation") || "/usr/local/bin/brew"
+    return localStorage.getItem("brewLocation") || this.senceBrewLocation
   }
 
   set brewLocation(s: string) {
     localStorage.setItem("brewLocation", s)
   }
 
+  get brewPrefix(){
+    return this.brewLocation.replace("/bin/brew","")
+  }
+
+  get senceBrewLocation(){
+    const existsSync = require("electron").remote.require("fs").existsSync
+    if  (existsSync("/opt/homebrew/bin/brew")){
+      this.brewLocation = "/opt/homebrew/bin/brew"
+      return "/opt/homebrew/bin/brew"
+    } else if  (existsSync("/usr/local/bin/brew")) {
+      this.brewLocation = "/usr/local/bin/brew"
+      return "/usr/local/bin/brew"
+    } else {
+      return "/usr/local/bin/brew"
+    }
+
+  }
 
   get stdoutMaxBuffer(): number {
     const Mag1 = 1024 * 1024
