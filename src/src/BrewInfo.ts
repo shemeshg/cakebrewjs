@@ -19,7 +19,7 @@ export class BrewInfo extends ShellCmdUi {
     if (packageType === PackageType.formula) {
       cmd = [Ls.brewLocation, "info", "--formula", packageName]
     }
-    const cmdObj = await this.runCmd([cmd], status)
+    const cmdObj = await this.runCmdEscaped([cmd], status)
     status.value = `Finished`
     return this.getResultString(cmdObj)
   }
@@ -31,11 +31,11 @@ export class BrewInfo extends ShellCmdUi {
     let cmdFormula = [["HOMEBREW_NO_GITHUB_API=1",Ls.brewLocation, "search", "--formula", textSearch]]
     cmdFormula = cmdFormula.concat([["head -50"],["xargs", Ls.brewLocation,"info","--formula","--json=v2"]])
 
-    const cmdObjCask = await this.runCmd(cmdCask, status,undefined,undefined,"|")
+    const cmdObjCask = await this.runCmdEscaped(cmdCask, status,undefined,"|")
     status.value = `Finished`
     const caskResult =  this.getResultString(cmdObjCask)
 
-    const cmdObjFormula = await this.runCmd(cmdFormula, status,undefined,undefined,"|")
+    const cmdObjFormula = await this.runCmdEscaped(cmdFormula, status,undefined,"|")
     status.value = `Finished`
     const formulaResult =  this.getResultString(cmdObjFormula)
 
@@ -81,7 +81,7 @@ export class BrewInfo extends ShellCmdUi {
       let cmd = [["du", "-hsH"].concat(trashWithArtifact,"2>/dev/null"),["cat"]]
 
     
-      const cmdObj = await this.runCmd(cmd, status,undefined,undefined,"|")
+      const cmdObj = await this.runCmdEscaped(cmd, status,undefined,"|")
       status.value = `Finished`
 
       retStr = this.getResultString(cmdObj)
@@ -91,7 +91,7 @@ export class BrewInfo extends ShellCmdUi {
     const cmd = [["find ",caskRooomFolder,"-print0"],["xargs -0 du -shHc "],["tail -n 1 2>/dev/null"],["cat"]]
 
 
-    const cmdObj1 = await this.runCmd(cmd, status,undefined,undefined,"|")
+    const cmdObj1 = await this.runCmdEscaped(cmd, status,undefined,"|")
 
     status.value = `Finished`
 
@@ -207,7 +207,7 @@ export class BrewInfo extends ShellCmdUi {
   async doPin(packageName: string, status: Ref) {
     const cmd = [Ls.brewLocation, "pin", packageName]
 
-    const cmdObj = await this.runCmd([cmd], status)
+    const cmdObj = await this.runCmdEscaped([cmd], status)
 
     status.value = `Finished`
     return this.getResultString(cmdObj)
@@ -216,7 +216,7 @@ export class BrewInfo extends ShellCmdUi {
   async doUnpin(packageName: string, status: Ref) {
     const cmd = [Ls.brewLocation, "unpin", packageName]
 
-    const cmdObj = await this.runCmd([cmd], status)
+    const cmdObj = await this.runCmdEscaped([cmd], status)
 
     status.value = `Finished`
     return this.getResultString(cmdObj)
@@ -224,12 +224,12 @@ export class BrewInfo extends ShellCmdUi {
 
   private async getInfo(status: Ref, doBrewUpdate: boolean) {
     if (doBrewUpdate) {
-      await this.runCmd([[Ls.brewLocation, "update"]], status)
+      await this.runCmdEscaped([[Ls.brewLocation, "update"]], status)
     }
 
-    const brewLs = await this.runCmd([[Ls.brewLocation, "info", "--installed", "--json=v2"]], status);
-    const brewOutdated = await this.runCmd([[Ls.brewLocation, "outdated", "--json=v2"]], status);
-    const brewSservices = await this.runCmd([[Ls.brewLocation, "services","--json"]], status);
+    const brewLs = await this.runCmdEscaped([[Ls.brewLocation, "info", "--installed", "--json=v2"]], status);
+    const brewOutdated = await this.runCmdEscaped([[Ls.brewLocation, "outdated", "--json=v2"]], status);
+    const brewSservices = await this.runCmdEscaped([[Ls.brewLocation, "services","--json"]], status);
 
     status.value = `Finished`
     return new FormatData(this.getResultString(brewLs), this.getResultString(brewOutdated), this.getResultString(brewSservices));

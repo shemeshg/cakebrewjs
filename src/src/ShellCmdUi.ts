@@ -43,16 +43,7 @@ export class ShellCmdUi {
     })
   }
 
-  protected async runCmd(str: string[][], status: Ref, noEscapedString = "", moreInfo = "", strJoinWith=";") {
-
-    let shellCmd: ShellCmd;
-    if (noEscapedString) {
-      shellCmd = new ShellCmd(noEscapedString)
-    } else {
-      shellCmd = new ShellCmd(this.getEscapedCmd(str,strJoinWith));
-    }
-
-    
+   private async  pRunCmd(shellCmd: ShellCmd, status: Ref, moreInfo = "",){
     status.value = `${moreInfo} Running: ${shellCmd.cmd}`
     try {
       await shellCmd.doCmd();
@@ -67,6 +58,24 @@ export class ShellCmdUi {
     }
   }
 
+  protected async runCmdEscaped(str: string[][], status: Ref, moreInfo = "", strJoinWith=";") {
+
+
+    const  shellCmd = new ShellCmd(this.getEscapedCmd(str,strJoinWith));
+    return this.pRunCmd(shellCmd, status, moreInfo)
+    
+  }
+
+
+  protected async runCmdNotEscaped(noEscapedString: string, status: Ref, moreInfo = "") {
+
+
+    const shellCmd = new ShellCmd(noEscapedString)
+    
+    return this.pRunCmd(shellCmd, status, moreInfo);
+  }
+
+
 
   protected getResultString(sc: ShellCmd) {
     return sc.result.filter((r) => { return r.exeStatus === ExecRunStatus.SUCCESS }).map((r) => { return r.str }).join("")
@@ -75,7 +84,7 @@ export class ShellCmdUi {
   protected async runExtermalCmd(cmd: string[][], status: Ref) {
     const ecmd = this.externalTerminalCmd(cmd)
     const w = this.waitForTmpFile(ecmd.tmpFile)
-    const cmdObj = await this.runCmd([], status, ecmd.cmdStr, this.getEscapedCmd(cmd) +"</br>");
+    const cmdObj = await this.runCmdNotEscaped(ecmd.cmdStr,  status, this.getEscapedCmd(cmd) +"</br>");
     await w;
     return cmdObj;
 
