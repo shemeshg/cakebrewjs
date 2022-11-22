@@ -11,8 +11,7 @@
       <b-button size="sm" class="mr-1" @click="doUpgradeAll"
         >Upgrade all ({{ countUpgradable }})</b-button
       >
-
-      <b-button size="sm" class="mr-1" @click="doUpgradeSelected"
+      <b-button size="sm" class="mr-1" :disabled="(formulaSelectedUpgrade.length + caskSelectedUpgrade.length) == 0" @click="doUpgradeSelected"
         >Upgrade selected ({{
           formulaSelectedUpgrade.length + caskSelectedUpgrade.length
         }})</b-button
