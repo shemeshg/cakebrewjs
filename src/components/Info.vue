@@ -172,6 +172,7 @@ export default {
 
     async function getPackageInfo() {
       resetForm()
+      searchName.value = searchName.value.toLowerCase().trim()
       let s: string = searchName.value
       s = s.trim()
       const sary = s.split(" ")
