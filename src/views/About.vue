@@ -7,7 +7,17 @@
         v-model="brewLocation"
         autofocus
       ></b-form-input>
+
+      Terminall application 
+      <b-form-select
+        id="inline-form-custom-select-pref"
+        class="mb-2 mr-sm-2 mb-sm-0"
+        :options="['Terminal', 'iTerm']"
+        v-model="terminalApp"
+      ></b-form-select>      
       <hr/>
+
+
   <h2>Credits</h2>
     <p>Icons made by Freepik from www.flaticon.com</p>
     <p>https://github.com/shemeshg/cakebrewjs</p>
@@ -33,7 +43,11 @@ export default {
       store.commit("setBrewLocation", val);
     }});
 
-    return {brewLocation};
+    const terminalApp = computed({get: () => store.state.terminalApp, set: (val)=>{
+      store.commit("setTerminalApp", val);
+    }});
+
+    return {brewLocation, terminalApp};
 
   }
 }

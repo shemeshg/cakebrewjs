@@ -27,11 +27,19 @@ class LsClass {
 
   get stdoutMaxBuffer(): number {
     const Mag1 = 1024 * 1024
-    return Number(localStorage.getItem("stdoutMaxBuffer")) || Mag1 * 4
+    return Number(localStorage.getItem("stdoutMaxBuffer")) || Mag1 * 8
   }
 
   set stdoutMaxBuffer(s: number) {
     localStorage.setItem("stdoutMaxBuffer", s.toString())
+  }
+
+  get terminalApp(): string {
+    return localStorage.getItem("terminalApp") || "Terminal"
+  }
+
+  set terminalApp(s: string) {
+    localStorage.setItem("terminalApp", s.toString())
   }
 
   private _getBoolLocalStorage(key: string) {

@@ -1,5 +1,6 @@
 import { ShellCmd, ExecRunStatus } from "./ShellCmd";
 import { Ref } from '@vue/composition-api'
+import {Ls} from "../src/Ls"
 
 export class ShellCmdUi {
 
@@ -22,7 +23,7 @@ export class ShellCmdUi {
     const writeFileSync = require("electron").remote.require("fs").writeFileSync;
     const str = `trap "rm ${tmpFile}" EXIT;${this.getEscapedCmd(cmd)};`
     writeFileSync(tmpFile, str, 'utf-8');
-    const cmdStr = `chmod +x ${tmpFile} ; open -a Terminal ${tmpFile} ; `
+    const cmdStr = `chmod +x ${tmpFile} ; open -a ${Ls.terminalApp} ${tmpFile} ; `
 
     return { tmpFile: tmpFile, cmdStr: cmdStr }
   }

@@ -16,13 +16,18 @@ export default new Vuex.Store({
     statusVariantHome: "info",
     statusInfo: "Finished",
     statusVariantInfo: "info",
-    brewLocation: Ls.brewLocation
+    brewLocation: Ls.brewLocation,
+    terminalApp: Ls.terminalApp
   },
   mutations: {
     setBrewLocation: (state, val) => {
       state.brewLocation = val;
       Ls.brewLocation = val;
     },
+    setTerminalApp: (state, val) => {
+      state.terminalApp = val;
+      Ls.terminalApp = val;
+    },    
     setBrewCasksInfo: (state, val) => {
       state.brewCasksInfo = val;
     },
