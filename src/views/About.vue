@@ -8,7 +8,7 @@
         autofocus
       ></b-form-input>
 
-      Terminall application 
+      Terminal application 
       <b-form-select
         id="inline-form-custom-select-pref"
         class="mb-2 mr-sm-2 mb-sm-0"
