@@ -132,14 +132,14 @@ export class BrewInfo extends ShellCmdUi {
     const cmd: string[][] = []
     if (casks.length > 0) {
       let c: string[] = []
-      c = c.concat([Ls.brewLocation, "upgrade", "--cask"])
+      c = c.concat(["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "upgrade", "--cask"])
       c = c.concat(casks)
       cmd.push(c)
     }
 
     if (formulas.length > 0) {
       let c: string[] = []
-      c = c.concat([Ls.brewLocation, "upgrade", "--formula"])
+      c = c.concat(["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "upgrade", "--formula"])
       c = c.concat(formulas)
       cmd.push(c)
     }
@@ -193,9 +193,9 @@ export class BrewInfo extends ShellCmdUi {
   }
 
   async doInstall(packageType: PackageType, packageName: string, status: Ref) {
-    let cmd = [Ls.brewLocation, "install", "--cask", packageName]
+    let cmd = ["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "install", "--cask", packageName]
     if (packageType === PackageType.formula) {
-      cmd = [Ls.brewLocation, "install", "--formula", packageName]
+      cmd = ["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "install", "--formula", packageName]
     }
 
     const cmdObj = await this.runExtermalCmd([cmd], status)
@@ -228,7 +228,7 @@ export class BrewInfo extends ShellCmdUi {
     }
 
     const brewLs = await this.runCmdEscaped([["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "info", "--installed", "--json=v2"]], status);
-    const brewOutdated = await this.runCmdEscaped([[Ls.brewLocation, "outdated", "--json=v2"]], status);
+    const brewOutdated = await this.runCmdEscaped([["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "outdated", "--json=v2"]], status);
     const brewSservices = await this.runCmdEscaped([[Ls.brewLocation, "services","--json"]], status);
 
     status.value = `Finished`
