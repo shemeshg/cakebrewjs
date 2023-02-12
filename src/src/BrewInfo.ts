@@ -224,10 +224,10 @@ export class BrewInfo extends ShellCmdUi {
 
   private async getInfo(status: Ref, doBrewUpdate: boolean) {
     if (doBrewUpdate) {
-      await this.runCmdEscaped([[Ls.brewLocation, "update"]], status)
+      await this.runCmdEscaped([["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "update"]], status)
     }
 
-    const brewLs = await this.runCmdEscaped([[Ls.brewLocation, "info", "--installed", "--json=v2"]], status);
+    const brewLs = await this.runCmdEscaped([["HOMEBREW_NO_INSTALL_FROM_API=1",Ls.brewLocation, "info", "--installed", "--json=v2"]], status);
     const brewOutdated = await this.runCmdEscaped([[Ls.brewLocation, "outdated", "--json=v2"]], status);
     const brewSservices = await this.runCmdEscaped([[Ls.brewLocation, "services","--json"]], status);
 
