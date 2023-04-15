@@ -29,7 +29,12 @@ export class FormatData {
   }
 
   constructor ( brewLs: string , brewOutdatedStr: string, brewServices: string){
-    this.brewServices = this.parseBreServices( brewServices )
+    if(brewServices){
+      this.brewServices = this.parseBreServices( brewServices )
+    } else {
+      this.brewServices = []
+    }
+    
     
     const json = JSON.parse( brewLs )
 
