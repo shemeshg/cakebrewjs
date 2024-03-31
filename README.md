@@ -1,4 +1,6 @@
-# Cakebrewjs
+This is **outdated** version. For `version 2.x` see <https://github.com/shemeshg/CakebrewJs2-ds>
+
+# Cakebrewjs 1.0
 
 Homebrew GUI App written in electron
 
