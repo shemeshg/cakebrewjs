@@ -14,6 +14,12 @@ Homebrew GUI App written in electron
 brew install --cask cakebrewjs
 ```
 
+* *Must* fix signature:
+`codesign --force --deep --sign - /Applications/cakebrewjs.app/`
+
+* *Must* fix authorizations:
+`xattr -c /Applications/cakebrewjs.app/`
+
 ## Uninstall
 
 ```bash
